@@ -44,6 +44,13 @@ WellFish is an innovative solution designed to assist consumers, fishermen, trad
     php artisan key:generate
 
 4. **configure the env**
+      ```bash
+      DB_CONNECTION=mysql
+      DB_HOST=<your_db_host>
+      DB_PORT=3306
+      DB_DATABASE=<your_db_name>
+      DB_USERNAME=<your_db_username>
+      DB_PASSWORD=<your_db_password>
 
 5. **Run the migrations**:
    ```bash
