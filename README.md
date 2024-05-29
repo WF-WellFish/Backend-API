@@ -8,30 +8,26 @@ Welcome to the WellFish Backend API! This API is developed using Laravel to supp
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [API Endpoints](#api-endpoints)
-- [Contributing](#contributing)
-- [License](#license)
+- [API Documentation](#api-documentation)
 
-## Introduction
+### Introduction
 
 WellFish is an innovative solution designed to assist consumers, fishermen, traders, and other stakeholders in the marine industry. By leveraging machine learning, WellFish provides accurate fish species identification and disease detection, ensuring the freshness and safety of fish for consumption. This helps in reducing consumer uncertainties and protecting marine ecosystems from the spread of fish diseases.
 
-## Features
+### Features
 
 - **Fish Species Identification**: Detect and identify different species of fish using machine learning.
 - **Freshness Detection**: Determine the degree of freshness of the fish accurately.
 - **Disease Detection**: Identify diseases in fish to prevent their spread and protect marine ecosystems.
 - **User Management**: Support for various user roles including fishermen, traders, and general consumers.
 
-## Requirements
+### Requirements
 
 - PHP >= 8.2
 - Composer
 - MySQL
 
-## Installation
+### Installation
 
 1. **Clone the repository**:
    ```bash
@@ -60,6 +56,6 @@ WellFish is an innovative solution designed to assist consumers, fishermen, trad
 7. **You're all set!**:
     Your backend API is now up and running. You can access the API at `http://localhost:8000`.
 
-## API Documentation
+### API Documentation
 The API documentation can be accessed at https://www.postman.com/gold-rocket-493207/workspace/wellfish-workspaces
 
