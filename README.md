@@ -1,34 +1,37 @@
-# Backend API
+# WellFish Backend API
 
-## Overview
+Welcome to the WellFish Backend API! This API is developed using Laravel to support the WellFish project, which aims to enhance the efficiency and safety of marine product consumption by providing fish species identification and freshness detection via a mobile application.
 
-Welcome to the WellFish Backend API repository! This project is a robust and scalable backend solution built with Laravel. It is designed to provide a clean and intuitive API interface, secure authentication, and seamless database management.
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [API Endpoints](#api-endpoints)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Introduction
+
+WellFish is an innovative solution designed to assist consumers, fishermen, traders, and other stakeholders in the marine industry. By leveraging machine learning, WellFish provides accurate fish species identification and disease detection, ensuring the freshness and safety of fish for consumption. This helps in reducing consumer uncertainties and protecting marine ecosystems from the spread of fish diseases.
 
 ## Features
 
-- **RESTful API**: Follows REST principles for a clean API design.
-- **Database Management**: Seamless integration with MySQL or other databases supported by Laravel.
-- **Validation**: Built-in request validation to ensure data integrity.
-- **Error Handling**: Comprehensive error handling and logging.
-- **Scalability**: Designed to handle high traffic and scale horizontally.
-- **Documentation**: API documentation using tools like Postman.
+- **Fish Species Identification**: Detect and identify different species of fish using machine learning.
+- **Freshness Detection**: Determine the degree of freshness of the fish accurately.
+- **Disease Detection**: Identify diseases in fish to prevent their spread and protect marine ecosystems.
+- **User Management**: Support for various user roles including fishermen, traders, and general consumers.
 
-## Technologies Used
+## Requirements
 
-- **Laravel**: PHP framework for web applications.
-- **Database**: MySQL.
-- **Validation**: Laravel's built-in validation.
-- **Documentation**: Postman for API documentation.
-
-## Getting Started
-
-### Prerequisites
-
-- PHP 8.2 or higher
+- PHP >= 8.2
 - Composer
 - MySQL
 
-### Installation
+## Installation
 
 1. **Clone the repository**:
    ```bash
