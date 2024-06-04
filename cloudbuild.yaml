@@ -31,11 +31,18 @@ steps:
       - '-c'
       - |
         sleep 10 # Give MySQL some time to start
-        mysql -u root -e "CREATE DATABASE wellfish_test;"
+        mysql -u root -e "CREATE DATABASE wellfish_testing;"
 
   # Step 5: Run database migrations
   - name: 'gcr.io/cloud-builders/php'
     entrypoint: 'bash'
+    env:
+      - DB_CONNECTION=mysql
+      - DB_HOST=127.0.0.1
+      - DB_PORT=3306
+      - DB_DATABASE=wellfish_test
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
     args:
       - '-c'
       - |
@@ -45,6 +52,13 @@ steps:
   # Step 6: Run PHPUnit tests
   - name: 'gcr.io/cloud-builders/php'
     entrypoint: 'bash'
+    env:
+      - DB_CONNECTION=mysql
+      - DB_HOST=127.0.0.1
+      - DB_PORT=3306
+      - DB_DATABASE=wellfish_test
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
     args:
       - '-c'
       - |
@@ -57,15 +71,6 @@ steps:
       - '-c'
       - |
         vendor/bin/pint --test
-
-# Define the environment variables
-env:
-  - DB_CONNECTION=mysql
-  - DB_HOST=127.0.0.1
-  - DB_PORT=3306
-  - DB_DATABASE=wellfish_test
-  - DB_USERNAME=root
-  - DB_PASSWORD=root
 
 # Specify the timeout
 timeout: '1200s'
