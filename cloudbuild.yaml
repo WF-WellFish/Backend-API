@@ -1,7 +1,6 @@
 steps:
-  # Step 0: Set up PHP and Composer
-  - id: 'Install PHP and composer'
-    name: 'php'
+  # Step 1: Set up PHP and Composer
+  - name: 'php:8.1-cli'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -10,50 +9,66 @@ steps:
         curl -sS https://getcomposer.org/installer | php
         mv composer.phar /usr/local/bin/composer
 
-  # Step 1: Install Composer dependencies
-  - id: 'Install Composer dependencies'
-    name: 'composer'
+  # Step 2: Install Composer dependencies
+  - name: 'composer:latest'
     args: ['install']
 
-  # Step 5: Run Pint lint check
-  - id: 'Run Pint lint check'
-    name: 'php'
+  # Step 3: Start MySQL server
+  - name: 'mysql:latest'
+    id: 'start-mysql'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        vendor/bin/pint --test
-
-  # Step 2: Set up the database
-  - id: 'Set up MySql'
-    name: 'mysql'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        # Initialize MySQL data directory
-        mysqld --initialize-insecure --user=mysql --datadir=/var/lib/mysql
-        # Start MySQL service
+        # Start MySQL server with a password for root user
+        docker-entrypoint.sh mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
+        sleep 10
+        mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';" -p
+        mysqladmin -u root -proot shutdown
         mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
-        # Set root user password
-        mysqladmin -u root password 'root'
+        # Wait for MySQL server to be available
+        for i in {30..0}; do
+          if echo 'SELECT 1' | mysql -u root -proot --protocol=socket -h localhost; then
+            break
+          fi
+          echo 'MySQL init process in progress...'
+          sleep 1
+        done
+        if [ "$i" = 0 ]; then
+          echo >&2 'MySQL init process failed.'
+          exit 1
+        fi
 
-  # Step 3: Create the test database
-  - id: 'Create the database'
-    name: 'mysql'
+  # Step 4: Create the test database
+  - name: 'mysql:latest'
+    waitFor: ['start-mysql']
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        sleep 10 # Give MySQL some time to start
-        mysql -u root -p root -e "CREATE DATABASE wellfish_test;"
-    waitFor:
-      - 'Set up MySql'
+        mysql -u root -proot -e "CREATE DATABASE wellfish_test;"
 
-  # Step 4: Run PHPUnit tests
-  - id: 'Run tests'
-    name: 'php'
+  # Step 5: Run database migrations
+  - name: 'php:8.1-cli'
     entrypoint: 'bash'
+    waitFor: ['start-mysql']
+    env:
+      - DB_CONNECTION=mysql
+      - DB_HOST=127.0.0.1
+      - DB_PORT=3306
+      - DB_DATABASE=wellfish_test
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    args:
+      - '-c'
+      - |
+        cp .env.testing .env
+        php artisan migrate --env=testing
+
+  # Step 6: Run PHPUnit tests
+  - name: 'php:8.1-cli'
+    entrypoint: 'bash'
+    waitFor: ['start-mysql']
     env:
       - DB_CONNECTION=mysql
       - DB_HOST=127.0.0.1
@@ -65,6 +80,14 @@ steps:
       - '-c'
       - |
         vendor/bin/phpunit
+
+  # Step 7: Run Pint lint check
+  - name: 'php:8.1-cli'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        vendor/bin/pint --test
 
 # Specify the timeout
 timeout: '1200s'
