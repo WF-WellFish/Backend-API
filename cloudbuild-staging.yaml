@@ -1,10 +1,11 @@
 steps:
-  - name: 'gcr.io/cloudsql-docker/gce-proxy:1.16'
-    entrypoint: '/bin/sh'
+  # Step 0: Start Cloud SQL Proxy
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
     args:
       - '-c'
       - |
-        /cloud_sql_proxy -instances=wellfish:asia-southeast2:wellfish-staging=tcp:3306 &
+        cloud_sql_proxy -instances=wellfish:asia-southeast2:wellfish-staging=tcp:3306 &
 
   # Step 0: Install Composer dependencies
   - name: 'composer:latest'
