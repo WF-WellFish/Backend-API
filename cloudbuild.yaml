@@ -1,6 +1,7 @@
 steps:
   # Step 0: Set up PHP and Composer
-  - name: 'php'
+  - id: 'Install PHP and composer'
+    name: 'php'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -10,11 +11,13 @@ steps:
         mv composer.phar /usr/local/bin/composer
 
   # Step 1: Install Composer dependencies
-  - name: 'composer'
+  - id: 'Install Composer dependencies'
+    name: 'composer'
     args: ['install']
 
   # Step 5: Run Pint lint check
-  - name: 'php'
+  - id: 'Run Pint lint check'
+    name: 'php'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -22,7 +25,8 @@ steps:
         vendor/bin/pint --test
 
   # Step 2: Set up the database
-  - name: 'mysql'
+  - id: 'Set up MySql'
+    name: 'mysql'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -35,16 +39,20 @@ steps:
         mysqladmin -u root password 'root'
 
   # Step 3: Create the test database
-  - name: 'mysql'
+  - id: 'Create the database'
+    name: 'mysql'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         sleep 10 # Give MySQL some time to start
         mysql -u root -p root -e "CREATE DATABASE wellfish_test;"
+    waitFor:
+      - 'Set up MySql'
 
   # Step 4: Run PHPUnit tests
-  - name: 'php'
+  - id: 'Run tests'
+    name: 'php'
     entrypoint: 'bash'
     env:
       - DB_CONNECTION=mysql
