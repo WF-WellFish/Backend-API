@@ -43,33 +43,9 @@ steps:
 #        # Create the test database
 #        mysql -u root -proot -e "CREATE DATABASE wellfish_test;"
 
-  # Step 4: Run database migrations
-  - name: 'php:8.2-cli'
-    entrypoint: 'bash'
-#    waitFor: ['start-mysql']
-    env:
-      - DB_CONNECTION=mysql
-      - DB_HOST=34.128.73.78
-      - DB_PORT=3306
-      - DB_DATABASE=wellfish_test
-      - DB_USERNAME=root
-      - DB_PASSWORD=root
-    args:
-      - '-c'
-      - |
-        php artisan migrate --env=testing
-
   # Step 5: Run PHPUnit tests
   - name: 'php:8.2-cli'
     entrypoint: 'bash'
-#    waitFor: ['start-mysql']
-    env:
-      - DB_CONNECTION=mysql
-      - DB_HOST=34.128.73.78
-      - DB_PORT=3306
-      - DB_DATABASE=wellfish_test
-      - DB_USERNAME=root
-      - DB_PASSWORD=root
     args:
       - '-c'
       - |
