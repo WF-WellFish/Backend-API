@@ -3,7 +3,7 @@ steps:
   - name: 'composer:latest'
     args: ['install']
 
-  # Step 1: Create the .env and .env.testing files
+  # Step 1: Create the .env.testing files
   - name: 'php:8.2-cli'
     entrypoint: 'bash'
     args:
@@ -18,9 +18,10 @@ steps:
         sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=$$DB_PASSWORD_ST/" .env.testing
         ls -la
         cat .env.testing
-    secretEnv:
-        - 'DB_HOST_ST'
-        - 'DB_PASSWORD_ST'
+    secretEnv: [
+        'DB_HOST_ST',
+        'DB_PASSWORD_ST'
+    ]
 
   # Step 2: Run Pint lint check
   - name: 'php:8.2-cli'
@@ -46,7 +47,7 @@ timeout: '1200s'
 
 availableSecrets:
   secretManager:
-    - versionName: projects/$PROJECT_ID/secrets/MYSQL_HOST_STAGING/versions/1
+    - versionName: projects/$PROJECT_ID/secrets/MYSQL_HOST_STAGING/versions/latest
       env: 'DB_HOST_ST'
-    - versionName: projects/$PROJECT_ID/secrets/MYSQL_PASSWORD_STAGING/versions/1
+    - versionName: projects/$PROJECT_ID/secrets/MYSQL_PASSWORD_STAGING/versions/latest
       env: 'DB_PASSWORD_ST'
