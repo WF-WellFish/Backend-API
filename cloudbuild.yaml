@@ -17,6 +17,7 @@ steps:
         echo "DB_USERNAME=root" >> .env.testing
         echo "DB_PASSWORD=$$DB_PASSWORD_STAGING_TEST" >> .env.testing
         ls -la
+        cat .env.testing
 
   # Step 2: Run Pint lint check
   - name: 'php:8.2-cli'
