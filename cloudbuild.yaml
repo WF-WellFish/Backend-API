@@ -48,5 +48,5 @@ availableSecrets:
   secretManager:
     - versionName: projects/$PROJECT_ID/secrets/DB_HOST_STAGING_TEST/versions/1
       env: 'DB_HOST_ST'
-    - versionName: projects/$PROJECT_ID/secrets/DDB_PASSWORD_STAGING_TEST/versions/1
+    - versionName: projects/$PROJECT_ID/secrets/DB_PASSWORD_STAGING_TEST/versions/1
       env: 'DB_PASSWORD_ST'
