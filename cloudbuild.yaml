@@ -1,55 +1,7 @@
 steps:
-  # Step 1: Set up PHP and Composer
-  - name: 'php:8.2-cli'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        # Install Composer
-        curl -sS https://getcomposer.org/installer | php
-        mv composer.phar /usr/local/bin/composer
-
   # Step 2: Install Composer dependencies
   - name: 'composer:latest'
     args: ['install']
-
-  # Step 3: Start MySQL server with root password and create database
-#  - name: 'mysql:latest'
-#    id: 'start-mysql'
-#    entrypoint: 'bash'
-#    args:
-#      - '-c'
-#      - |
-#        # Initialize MySQL data directory
-#        docker-entrypoint.sh mysqld --initialize-insecure --user=mysql --datadir=/var/lib/mysql
-#        # Start MySQL server in the background with root password
-#        mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
-#        sleep 10
-#        mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"
-#        mysqladmin -u root -proot shutdown
-#        mysqld --user=mysql --datadir=/var/lib/mysql &
-#        # Wait for MySQL server to be available
-#        for i in {30..0}; do
-#          if echo 'SELECT 1' | mysql -u root -proot --protocol=socket -h localhost; then
-#            break
-#          fi
-#          echo 'MySQL init process in progress...'
-#          sleep 1
-#        done
-#        if [ "$i" = 0 ]; then
-#          echo >&2 'MySQL init process failed.'
-#          exit 1
-#        fi
-#        # Create the test database
-#        mysql -u root -proot -e "CREATE DATABASE wellfish_test;"
-
-  # Step 5: Run PHPUnit tests
-  - name: 'php:8.2-cli'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        vendor/bin/phpunit
 
   # Step 6: Run Pint lint check
   - name: 'php:8.2-cli'
@@ -58,6 +10,14 @@ steps:
       - '-c'
       - |
         vendor/bin/pint --test
+
+  # Step 5: Run PHPUnit tests
+  - name: 'php:8.2-cli'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        vendor/bin/phpunit
 
 # Specify the timeout
 timeout: '1200s'
