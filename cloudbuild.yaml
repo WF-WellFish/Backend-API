@@ -14,42 +14,42 @@ steps:
     args: ['install']
 
   # Step 3: Start MySQL server with root password and create database
-  - name: 'mysql:latest'
-    id: 'start-mysql'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        # Initialize MySQL data directory
-        docker-entrypoint.sh mysqld --initialize-insecure --user=mysql --datadir=/var/lib/mysql
-        # Start MySQL server in the background with root password
-        mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
-        sleep 10
-        mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"
-        mysqladmin -u root -proot shutdown
-        mysqld --user=mysql --datadir=/var/lib/mysql &
-        # Wait for MySQL server to be available
-        for i in {30..0}; do
-          if echo 'SELECT 1' | mysql -u root -proot --protocol=socket -h localhost; then
-            break
-          fi
-          echo 'MySQL init process in progress...'
-          sleep 1
-        done
-        if [ "$i" = 0 ]; then
-          echo >&2 'MySQL init process failed.'
-          exit 1
-        fi
-        # Create the test database
-        mysql -u root -proot -e "CREATE DATABASE wellfish_test;"
+#  - name: 'mysql:latest'
+#    id: 'start-mysql'
+#    entrypoint: 'bash'
+#    args:
+#      - '-c'
+#      - |
+#        # Initialize MySQL data directory
+#        docker-entrypoint.sh mysqld --initialize-insecure --user=mysql --datadir=/var/lib/mysql
+#        # Start MySQL server in the background with root password
+#        mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
+#        sleep 10
+#        mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"
+#        mysqladmin -u root -proot shutdown
+#        mysqld --user=mysql --datadir=/var/lib/mysql &
+#        # Wait for MySQL server to be available
+#        for i in {30..0}; do
+#          if echo 'SELECT 1' | mysql -u root -proot --protocol=socket -h localhost; then
+#            break
+#          fi
+#          echo 'MySQL init process in progress...'
+#          sleep 1
+#        done
+#        if [ "$i" = 0 ]; then
+#          echo >&2 'MySQL init process failed.'
+#          exit 1
+#        fi
+#        # Create the test database
+#        mysql -u root -proot -e "CREATE DATABASE wellfish_test;"
 
   # Step 4: Run database migrations
   - name: 'php:8.2-cli'
     entrypoint: 'bash'
-    waitFor: ['start-mysql']
+#    waitFor: ['start-mysql']
     env:
       - DB_CONNECTION=mysql
-      - DB_HOST=127.0.0.1
+      - DB_HOST=34.128.73.78
       - DB_PORT=3306
       - DB_DATABASE=wellfish_test
       - DB_USERNAME=root
@@ -62,10 +62,10 @@ steps:
   # Step 5: Run PHPUnit tests
   - name: 'php:8.2-cli'
     entrypoint: 'bash'
-    waitFor: ['start-mysql']
+#    waitFor: ['start-mysql']
     env:
       - DB_CONNECTION=mysql
-      - DB_HOST=127.0.0.1
+      - DB_HOST=34.128.73.78
       - DB_PORT=3306
       - DB_DATABASE=wellfish_test
       - DB_USERNAME=root
