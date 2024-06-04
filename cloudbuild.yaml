@@ -12,7 +12,7 @@ steps:
         vendor/bin/pint --test
 
   # Step 5: Run PHPUnit tests
-  - name: 'php:8.2-cli'
+  - name: 'php:8.2-mysql'
     entrypoint: 'bash'
     args:
       - '-c'
