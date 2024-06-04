@@ -11,16 +11,6 @@ steps:
       - |
         vendor/bin/pint --test
 
-  # Step 2 (new): Install MySQL client and run the database setup script
-  - name: 'gcr.io/cloud-builders/gcloud'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        apt update
-        apt install -y mysql-client
-        ./dbFile/dev_sh.sh ./dbFile/dev.sql
-
   # Step 3: Run the PHPUnit tests
   - name: 'php:8.2-cli'
     entrypoint: 'bash'
