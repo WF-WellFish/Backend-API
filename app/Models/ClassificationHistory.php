@@ -20,7 +20,7 @@ class ClassificationHistory extends Model
         'fish_food',
         'fish_food_stall',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     public function user(): BelongsTo
