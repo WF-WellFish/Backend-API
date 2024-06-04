@@ -1,0 +1,24 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/laravel', '.']
+
+  - name: 'gcr.io/$PROJECT_ID/laravel'
+    args: ['composer', 'install']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['run', '--name', 'mysql-test', '-e', 'MYSQL_ROOT_PASSWORD=root', '-e', 'MYSQL_DATABASE=wellfish_testing', '-d', 'mysql']
+
+  - name: 'gcr.io/$PROJECT_ID/laravel'
+    args: ['cp', '.env.testing', '.env']
+
+  - name: 'gcr.io/$PROJECT_ID/laravel'
+    args: ['php', 'artisan', 'migrate']
+
+  - name: 'gcr.io/$PROJECT_ID/laravel'
+    args: ['vendor/bin/phpunit']
+
+  - name: 'gcr.io/$PROJECT_ID/laravel'
+    args: ['vendor/bin/pint', '--test']
+
+images:
+  - 'gcr.io/$PROJECT_ID/laravel'

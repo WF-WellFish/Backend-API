@@ -1,24 +1,33 @@
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/laravel', '.']
+  # Step 0: Install Composer dependencies
+  - name: 'composer:latest'
+    args: ['install']
 
-  - name: 'gcr.io/$PROJECT_ID/laravel'
-    args: ['composer', 'install']
+  # Step 1: Run Pint lint check
+  - name: 'php:8.2-cli'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        vendor/bin/pint --test
 
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['run', '--name', 'mysql-test', '-e', 'MYSQL_ROOT_PASSWORD=root', '-e', 'MYSQL_DATABASE=wellfish_testing', '-d', 'mysql']
+  # Step 2 (new): Install MySQL client and run the database setup script
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        apt update
+        apt install -y mysql-client
+        ./dbFile/dev_sh.sh ./dbFile/dev.sql
 
-  - name: 'gcr.io/$PROJECT_ID/laravel'
-    args: ['cp', '.env.testing', '.env']
+  # Step 3: Run the PHPUnit tests
+  - name: 'php:8.2-cli'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        vendor/bin/phpunit
 
-  - name: 'gcr.io/$PROJECT_ID/laravel'
-    args: ['php', 'artisan', 'migrate']
-
-  - name: 'gcr.io/$PROJECT_ID/laravel'
-    args: ['vendor/bin/phpunit']
-
-  - name: 'gcr.io/$PROJECT_ID/laravel'
-    args: ['vendor/bin/pint', '--test']
-
-images:
-  - 'gcr.io/$PROJECT_ID/laravel'
+# Specify the timeout
+timeout: '1200s'
