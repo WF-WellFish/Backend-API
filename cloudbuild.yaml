@@ -6,7 +6,7 @@ steps:
     args: ['composer', 'install']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['run', '--name', 'mysql-test', '-e', 'MYSQL_ROOT_PASSWORD=root', '-e', 'MYSQL_DATABASE=wellfish_testing', '-d', 'mysql:5.7']
+    args: ['run', '--name', 'mysql-test', '-e', 'MYSQL_ROOT_PASSWORD=root', '-e', 'MYSQL_DATABASE=wellfish_testing', '-d', 'mysql']
 
   - name: 'gcr.io/$PROJECT_ID/laravel'
     args: ['cp', '.env.testing', '.env']
