@@ -5,13 +5,8 @@ steps:
 
   # Step 1: Install PHP extensions
   - name: 'php:8.2-cli'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        apt-get update
-        apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev libzip-dev unzip
-        docker-php-ext-install pdo pdo_mysql gd zip bcmath
+    entrypoint: 'docker-php-ext-install'
+    args: [ 'pdo_mysql' ]
 
   # Step 2: Run Pint lint check
   - name: 'php:8.2-cli'
