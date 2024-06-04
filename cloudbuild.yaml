@@ -10,11 +10,13 @@ steps:
       - '-c'
       - |
         cp .env.example .env.testing
+        php artisan key:generate --env=testing
         echo "APP_ENV=testing" >> .env.testing
         echo "DB_HOST=$$DB_HOST_STAGING_TEST" >> .env.testing
         echo "DB_DATABASE=wellfish_test" >> .env.testing
         echo "DB_USERNAME=root" >> .env.testing
         echo "DB_PASSWORD=$$DB_PASSWORD_STAGING_TEST" >> .env.testing
+        ls -la
 
   # Step 2: Run Pint lint check
   - name: 'php:8.2-cli'
