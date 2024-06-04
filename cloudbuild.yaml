@@ -1,5 +1,5 @@
 steps:
-  # Step 1: Set up PHP and Composer
+  # Step 0: Set up PHP and Composer
   - name: 'php'
     entrypoint: 'bash'
     args:
@@ -9,11 +9,19 @@ steps:
         curl -sS https://getcomposer.org/installer | php
         mv composer.phar /usr/local/bin/composer
 
-  # Step 2: Install Composer dependencies
+  # Step 1: Install Composer dependencies
   - name: 'composer'
     args: ['install']
 
-  # Step 3: Set up the database
+  # Step 5: Run Pint lint check
+  - name: 'php'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        vendor/bin/pint --test
+
+  # Step 2: Set up the database
   - name: 'mysql'
     entrypoint: 'bash'
     args:
@@ -23,33 +31,19 @@ steps:
         mysqld --initialize-insecure --user=mysql --datadir=/var/lib/mysql
         # Start MySQL service
         mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
+        # Set root user password
+        mysqladmin -u root password 'root'
 
-  # Step 4: Create the test database
+  # Step 3: Create the test database
   - name: 'mysql'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         sleep 10 # Give MySQL some time to start
-        mysql -u root -e "CREATE DATABASE wellfish_test;"
+        mysql -u root -p root -e "CREATE DATABASE wellfish_test;"
 
-  # Step 5: Run database migrations
-  - name: 'php'
-    entrypoint: 'bash'
-    env:
-      - DB_CONNECTION=mysql
-      - DB_HOST=127.0.0.1
-      - DB_PORT=3306
-      - DB_DATABASE=wellfish_test
-      - DB_USERNAME=root
-      - DB_PASSWORD=root
-    args:
-      - '-c'
-      - |
-        cp .env.testing .env
-        php artisan migrate --env=testing
-
-  # Step 6: Run PHPUnit tests
+  # Step 4: Run PHPUnit tests
   - name: 'php'
     entrypoint: 'bash'
     env:
@@ -63,14 +57,6 @@ steps:
       - '-c'
       - |
         vendor/bin/phpunit
-
-  # Step 7: Run Pint lint check
-  - name: 'php'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        vendor/bin/pint --test
 
 # Specify the timeout
 timeout: '1200s'
