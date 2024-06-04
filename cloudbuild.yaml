@@ -1,31 +1,24 @@
 steps:
-  # Step 1: Install Composer dependencies
-  - name: 'composer:latest'
-    args: ['install']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/wellfish/laravel', '.']
 
-  # Step 2: Run Pint lint check
-  - name: 'php:8.2-cli'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        vendor/bin/pint --test
+  - name: 'gcr.io/$PROJECT_ID/laravel'
+    args: ['composer', 'install']
 
-  # Install Cloud SQL proxy
-  - id: proxy-install
-    name: 'php:8.2-cli'
-    entrypoint: sh
-    args:
-      - "-c"
-      - "wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.4.0/cloud-sql-proxy.linux.amd64 -O cloud_sql_proxy && chmod +x cloud_sql_proxy"
-    waitFor: ["-"]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['run', '--name', 'mysql-test', '-e', 'MYSQL_ROOT_PASSWORD=root', '-e', 'MYSQL_DATABASE=wellfish_testing', '-d', 'mysql:5.7']
 
-  # Step 3: Run PHPUnit tests
-  - name: 'php:8.2-cli'
-    entrypoint: 'bash'
-    args:
-      - "-c"
-      - "mkdir /cloudsql; chmod 777 /cloudsql; (./cloud_sql_proxy --unix-socket /cloudsql 34.128.73.78 & sleep 2) && vendor/bin/phpunit"
+  - name: 'gcr.io/$PROJECT_ID/laravel'
+    args: ['cp', '.env.testing', '.env']
 
-# Specify the timeout
-timeout: '1200s'
+  - name: 'gcr.io/$PROJECT_ID/laravel'
+    args: ['php', 'artisan', 'migrate']
+
+  - name: 'gcr.io/$PROJECT_ID/laravel'
+    args: ['vendor/bin/phpunit']
+
+  - name: 'gcr.io/$PROJECT_ID/laravel'
+    args: ['vendor/bin/pint', '--test']
+
+images:
+  - 'gcr.io/$PROJECT_ID/laravel'
