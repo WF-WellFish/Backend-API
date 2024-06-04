@@ -1,6 +1,6 @@
 steps:
   # Step 1: Set up PHP and Composer
-  - name: 'php:latest'
+  - name: 'php'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -10,11 +10,11 @@ steps:
         mv composer.phar /usr/local/bin/composer
 
   # Step 2: Install Composer dependencies
-  - name: 'gcr.io/cloud-builders/composer'
+  - name: 'composer'
     args: ['install']
 
   # Step 3: Set up the database
-  - name: 'gcr.io/cloud-builders/mysql'
+  - name: 'mysql'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -25,16 +25,16 @@ steps:
         mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
 
   # Step 4: Create the test database
-  - name: 'gcr.io/cloud-builders/mysql'
+  - name: 'mysql'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         sleep 10 # Give MySQL some time to start
-        mysql -u root -e "CREATE DATABASE wellfish_testing;"
+        mysql -u root -e "CREATE DATABASE wellfish_test;"
 
   # Step 5: Run database migrations
-  - name: 'gcr.io/cloud-builders/php'
+  - name: 'php'
     entrypoint: 'bash'
     env:
       - DB_CONNECTION=mysql
@@ -50,7 +50,7 @@ steps:
         php artisan migrate --env=testing
 
   # Step 6: Run PHPUnit tests
-  - name: 'gcr.io/cloud-builders/php'
+  - name: 'php'
     entrypoint: 'bash'
     env:
       - DB_CONNECTION=mysql
@@ -65,7 +65,7 @@ steps:
         vendor/bin/phpunit
 
   # Step 7: Run Pint lint check
-  - name: 'gcr.io/cloud-builders/php'
+  - name: 'php'
     entrypoint: 'bash'
     args:
       - '-c'
