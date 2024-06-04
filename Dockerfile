@@ -35,7 +35,7 @@ WORKDIR /var/www
 RUN rm -rf /var/www/html
 
 # Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www
+COPY . /var/www
 
 # Change current user to www
 USER www-data
