@@ -3,6 +3,19 @@ steps:
   - name: 'composer:latest'
     args: ['install']
 
+  # Step 1: Create the .env and .env.testing files
+  - name: 'php:8.2-cli'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        cp .env.example .env.testing
+        echo "APP_ENV=testing" >> .env.testing
+        echo "DB_HOST=$$DB_HOST_STAGING_TEST" >> .env.testing
+        echo "DB_DATABASE=wellfish_test" >> .env.testing
+        echo "DB_USERNAME=root" >> .env.testing
+        echo "DB_PASSWORD=$$DB_PASSWORD_STAGING_TEST" >> .env.testing
+
   # Step 2: Run Pint lint check
   - name: 'php:8.2-cli'
     entrypoint: 'bash'
