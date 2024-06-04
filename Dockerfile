@@ -1,5 +1,5 @@
 # Use the official PHP 8.0 image from Docker Hub
-FROM php:8.0-fpm
+FROM php:8.2-fpm
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
