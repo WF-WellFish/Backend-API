@@ -1,19 +1,71 @@
 steps:
-  - name: 'gcr.io/cloud-builders/composer'
-    args: [ 'install' ]
-  - name: 'gcr.io/cloud-builders/composer'
-    args: ['global', 'require', 'laravel/pint']
-  - name: 'gcr.io/cloud-builders/composer'
-    args: ['pint', '--test']
+  # Step 1: Set up PHP and Composer
   - name: 'gcr.io/cloud-builders/php'
-    args: ['artisan', 'test']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        # Install Composer
+        curl -sS https://getcomposer.org/installer | php
+        mv composer.phar /usr/local/bin/composer
 
-options:
-  env:
-    - 'DB_CONNECTION=mysql'
-    - 'DB_HOST=127.0.0.1'
-    - 'DB_PORT=3306'
-    - 'DB_DATABASE=wellfish_test'
-    - 'DB_USERNAME=root'
-    - 'DB_PASSWORD=root'
+  # Step 2: Install Composer dependencies
+  - name: 'gcr.io/cloud-builders/composer'
+    args: ['install']
 
+  # Step 3: Set up the database
+  - name: 'gcr.io/cloud-builders/mysql'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        # Initialize MySQL data directory
+        mysqld --initialize-insecure --user=mysql --datadir=/var/lib/mysql
+        # Start MySQL service
+        mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
+
+  # Step 4: Create the test database
+  - name: 'gcr.io/cloud-builders/mysql'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        sleep 10 # Give MySQL some time to start
+        mysql -u root -e "CREATE DATABASE wellfish_test;"
+
+  # Step 5: Run database migrations
+  - name: 'gcr.io/cloud-builders/php'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        cp .env.testing .env
+        php artisan migrate --env=testing
+
+  # Step 6: Run PHPUnit tests
+  - name: 'gcr.io/cloud-builders/php'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        vendor/bin/phpunit
+
+  # Step 7: Run Pint lint check
+  - name: 'gcr.io/cloud-builders/php'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        vendor/bin/pint --test
+
+# Define the environment variables
+env:
+  - DB_CONNECTION=mysql
+  - DB_HOST=127.0.0.1
+  - DB_PORT=3306
+  - DB_DATABASE=wellfish_test
+  - DB_USERNAME=root
+  - DB_PASSWORD=root
+
+# Specify the timeout
+timeout: '1200s'
