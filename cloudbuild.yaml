@@ -1,6 +1,6 @@
 steps:
   # Step 1: Set up PHP and Composer
-  - name: 'gcr.io/cloud-builders/php'
+  - name: 'php:latest'
     entrypoint: 'bash'
     args:
       - '-c'
