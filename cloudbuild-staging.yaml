@@ -1,12 +1,4 @@
 steps:
-  # Step 0: Start Cloud SQL Proxy
-  - name: 'gcr.io/cloud-builders/gcloud'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cloud_sql_proxy -instances=wellfish:asia-southeast2:wellfish-staging=tcp:3306 &
-
   # Step 0: Install Composer dependencies
   - name: 'composer:latest'
     args: ['install']
@@ -24,8 +16,8 @@ steps:
         sed -i "s/^DB_DATABASE=.*/DB_DATABASE=wellfish_test/" .env.testing
         sed -i "s/^DB_USERNAME=.*/DB_USERNAME=root/" .env.testing
         sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=$$DB_PASSWORD_ST/" .env.testing
-        ls -la
-        cat .env.testing
+        # ls -la
+        # cat .env.testing
     secretEnv: [
         'DB_HOST_ST',
         'DB_PASSWORD_ST'
@@ -39,6 +31,7 @@ steps:
       - |
         vendor/bin/pint --test
 
+  #TODO : Fix masalah connect ke mysql instance ini kalau mysql instance nya gk ngasih network 0.0.0.0/0 dia gk mau ke connect
   # Step 3: Run the PHPUnit tests
   - name: 'php:8.2-cli'
     entrypoint: 'bash'
@@ -48,11 +41,14 @@ steps:
         apt-get update
         apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev libzip-dev unzip
         docker-php-ext-install pdo pdo_mysql gd zip bcmath
+        # download cloud sql proxy
+        wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+        chmod +x cloud_sql_proxy
+        ./cloud_sql_proxy -instances=wellfish:asia-southeast2:wellfish-staging=tcp:3306 &
         vendor/bin/phpunit
 
 # Specify the timeout
 timeout: '1200s'
-
 availableSecrets:
   secretManager:
     - versionName: projects/$PROJECT_ID/secrets/MYSQL_HOST_STAGING/versions/latest
