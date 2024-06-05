@@ -14,7 +14,7 @@ trait ApiTrait
      * @param int|string $code
      * @return JsonResponse
      */
-    public function success(array $data = [], string $message = '',int|string $code = 200): JsonResponse
+    public function success(array $data = [], string $message = '', int|string $code = 200): JsonResponse
     {
         return response()->json([
             'status' => 'success',

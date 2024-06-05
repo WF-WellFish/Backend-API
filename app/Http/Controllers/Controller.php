@@ -6,5 +6,5 @@ use App\Traits\ApiTrait;
 
 abstract class Controller
 {
-    Use ApiTrait;
+    use ApiTrait;
 }

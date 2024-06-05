@@ -20,7 +20,7 @@ class LoginController extends Controller
     public function index(LoginRequest $request): JsonResponse
     {
         if(!Auth::attempt($request->validated())) {
-            return $this->error([],'Username or password is incorrect', 401);
+            return $this->error([], 'Username or password is incorrect', 401);
         }
 
         return $this->success([

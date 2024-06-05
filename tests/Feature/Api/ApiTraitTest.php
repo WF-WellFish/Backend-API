@@ -17,7 +17,7 @@ class ApiTraitTest extends TestCase
      */
     public function test_success_response_structure(): void
     {
-        $response = $this->success(['test' => 'data'],'Success Response Message',200);
+        $response = $this->success(['test' => 'data'], 'Success Response Message', 200);
 
         $this->assertObjectHasProperty('status', $response->getData());
         $this->assertObjectHasProperty('message', $response->getData());
@@ -36,7 +36,7 @@ class ApiTraitTest extends TestCase
      */
     public function test_error_response_structure(): void
     {
-        $response = $this->error(['data' => 'error'],'Error message', 400);
+        $response = $this->error(['data' => 'error'], 'Error message', 400);
 
         $this->assertObjectHasProperty('status', $response->getData());
         $this->assertObjectHasProperty('message', $response->getData());
