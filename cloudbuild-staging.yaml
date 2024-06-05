@@ -42,12 +42,8 @@ steps:
         apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev libzip-dev unzip
         docker-php-ext-install pdo pdo_mysql gd zip bcmath
         # install gd
-        docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-        --with-gd \
-        --with-jpeg-dir \
-        --with-png-dir \
-        --with-zlib-dir
-        docker-php-ext-install -j$(nproc) gd
+        docker-php-ext-configure gd --enable-gd --with-jpeg
+        docker-php-ext-install gd
         vendor/bin/phpunit
 
 # Specify the timeout
