@@ -12,7 +12,7 @@ steps:
         cp .env.example .env.testing
         php artisan key:generate --env=testing
         sed -i "s/^APP_ENV=.*/APP_ENV=testing/" .env.testing
-        sed -i "s/^DB_HOST=.*/DB_HOST=$$DB_HOST_ST/" .env.testing
+        sed -i "s/^DB_HOST=.*/DB_HOST=127.0.0.1/" .env.testing
         sed -i "s/^DB_DATABASE=.*/DB_DATABASE=wellfish_test/" .env.testing
         sed -i "s/^DB_USERNAME=.*/DB_USERNAME=root/" .env.testing
         sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=$$DB_PASSWORD_ST/" .env.testing
@@ -42,9 +42,8 @@ steps:
         apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev libzip-dev unzip
         docker-php-ext-install pdo pdo_mysql gd zip bcmath
         # download cloud sql proxy
-        curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.11.3/cloud-sql-proxy.linux.amd64
-        chmod +x cloud_sql_proxy
-        ./cloud_sql_proxy -instances=wellfish:asia-southeast2:wellfish-staging=tcp:3306 &
+        apt  install cloudsql-proxy
+        cloud_sql_proxy -instances=wellfish:asia-southeast2:wellfish-staging=tcp:3306 &
         vendor/bin/phpunit
 
 # Specify the timeout
