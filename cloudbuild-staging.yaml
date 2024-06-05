@@ -41,8 +41,6 @@ steps:
         apt-get update
         apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev libzip-dev unzip
         docker-php-ext-install pdo pdo_mysql gd zip bcmath
-        apt install cloudsql-proxy
-        cloud_sql_proxy -instances=wellfish:asia-southeast2:wellfish-staging=tcp:3306 &
         vendor/bin/phpunit
 
 # Specify the timeout
