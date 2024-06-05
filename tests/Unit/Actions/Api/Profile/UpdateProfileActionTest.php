@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Actions\Api\Profile;
 
-use App\Actions\Api\Profile\UpdateProfileAction;
 use PHPUnit\Framework\TestCase;
 
 class UpdateProfileActionTest extends TestCase
