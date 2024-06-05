@@ -32,6 +32,13 @@ class LoginTest extends TestCase
                     'token'
                 ]
             ]);
+
+        $this->assertAuthenticated();
+
+        $this->assertDatabaseHas('personal_access_tokens', [
+            'tokenable_id' => $user->id,
+            'tokenable_type' => 'App\Models\User'
+        ]);
     }
 
     /**
@@ -61,6 +68,13 @@ class LoginTest extends TestCase
                 'message',
                 'data'
             ]);
+
+        $this->assertGuest();
+
+        $this->assertDatabaseMissing('personal_access_tokens', [
+            'tokenable_id' => $user->id,
+            'tokenable_type' => 'App\Models\User'
+        ]);
     }
 
     /**

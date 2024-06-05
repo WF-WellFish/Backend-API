@@ -23,6 +23,10 @@ class LoginController extends Controller
             return $this->error([], 'Username or password is incorrect', 401);
         }
 
+        $user = Auth::user();
+
+        $user->tokens()->delete();
+
         return $this->success([
             'user' => new UserResource(Auth::user()),
             'token' => Auth::user()->createToken('authToken')->plainTextToken,

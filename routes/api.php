@@ -10,7 +10,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('profile', 'index')->name('profile');
+        Route::put('profile/{user}', 'update')->name('profile.update');
+    });
 });
 
 Route::post('register', [RegisterController::class, 'index'])->name('register');
