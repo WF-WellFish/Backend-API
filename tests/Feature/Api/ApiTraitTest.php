@@ -1,6 +1,6 @@
 <?php
 
-namespace Api;
+namespace Tests\Feature\Api;
 
 use App\Traits\ApiTrait;
 use Illuminate\Http\JsonResponse;

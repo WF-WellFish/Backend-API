@@ -17,7 +17,7 @@ steps:
         sed -i "s/^DB_USERNAME=.*/DB_USERNAME=root/" .env.testing
         sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=$$DB_PASSWORD_ST/" .env.testing
         # ls -la
-        cat .env.testing
+        # cat .env.testing
     secretEnv: [
         'DB_HOST_ST',
         'DB_PASSWORD_ST'
