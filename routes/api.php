@@ -1,24 +1,24 @@
 <?php
 
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RegisterController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
-
     Route::controller(ProfileController::class)->group(function () {
         Route::get('profile', 'index')->name('profile');
         Route::put('profile/{user}', 'update')->name('profile.update');
     });
+
+    Route::get('logout', [LogoutController::class, 'index'])->name('logout');
 });
 
-Route::post('register', [RegisterController::class, 'index'])->name('register');
-Route::post('login', [LoginController::class, 'index'])->name('login');
+Route::middleware('guest:sanctum')->group(function () {
+    Route::post('register', [RegisterController::class, 'index'])->name('register');
+    Route::post('login', [LoginController::class, 'index'])->name('login');
+});
 
 Route::get('/', function () {
     return response()->json([

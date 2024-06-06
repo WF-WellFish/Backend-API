@@ -10,8 +10,18 @@ class ClassificationHistory extends Model
 {
     use HasFactory;
 
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'classification_history';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'user_id',
         'fish_name',
@@ -23,6 +33,11 @@ class ClassificationHistory extends Model
         'updated_at',
     ];
 
+    /**
+     * Define the relationship with the user.
+     *
+     * @return BelongsTo
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
