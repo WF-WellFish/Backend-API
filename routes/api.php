@@ -15,10 +15,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('logout', [LogoutController::class, 'index'])->name('logout');
 });
 
-Route::middleware('guest:sanctum')->group(function () {
-    Route::post('register', [RegisterController::class, 'index'])->name('register');
-    Route::post('login', [LoginController::class, 'index'])->name('login');
-});
+// TODO : bikin user yang sudah login tidak bisa access register dan login
+Route::post('register', [RegisterController::class, 'index'])->name('register');
+Route::post('login', [LoginController::class, 'index'])->name('login');
 
 Route::get('/', function () {
     return response()->json([
