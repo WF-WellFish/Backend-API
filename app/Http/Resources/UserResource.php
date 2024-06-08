@@ -17,7 +17,7 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'profile_picture' => 'https://storage.googleapis.com/' . config('filesystems.disks.gcs.bucket') . '/' . $this->profile_picture,
+            'profile_picture' => $this->profile_picture ? 'https://storage.googleapis.com/' . config('filesystems.disks.gcs.bucket') . '/' . $this->profile_picture : null,
         ];
     }
 }

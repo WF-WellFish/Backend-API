@@ -2,11 +2,15 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Traits\ApiTrait;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class RegisterRequest extends FormRequest
 {
+    use ApiTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -31,13 +35,19 @@ class RegisterRequest extends FormRequest
         ];
     }
 
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param Validator $validator
+     * @return void
+     * @throws HttpResponseException
+     */
     protected function failedValidation(Validator $validator): void
     {
-        $response = response()->json([
-            'message' => 'The given data was invalid.',
-            'errors' => $validator->errors(),
-        ], 422);
-
-        throw new \Illuminate\Validation\ValidationException($validator, $response);
+        throw new HttpResponseException(
+            $this->error([
+                "errors" => $validator->errors()
+            ], 'Request validation failed.', 422)
+        );
     }
 }

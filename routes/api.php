@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\RegisterController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -15,6 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // TODO : bikin user yang sudah login tidak bisa access register dan login
 Route::post('login', [LoginController::class, 'index'])->name('login');
+Route::post('register', [RegisterController::class, 'index'])->name('register');
 
 Route::get('/', function () {
     return response()->json([
