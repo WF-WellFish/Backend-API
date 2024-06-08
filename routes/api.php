@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ChangePasswordController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\ProfileController;
@@ -12,6 +13,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::get('logout', [LogoutController::class, 'index'])->name('logout');
+    Route::post('change-password', [ChangePasswordController::class, 'index'])->name('change-password');
 });
 
 // TODO : bikin user yang sudah login tidak bisa access register dan login
