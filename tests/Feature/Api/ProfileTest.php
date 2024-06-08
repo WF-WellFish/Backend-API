@@ -10,6 +10,25 @@ use Tests\TestCase;
 class ProfileTest extends TestCase
 {
     /**
+     * The bucket name of the Google Cloud Storage
+     *
+     * @var string
+     */
+    private string $bucket;
+
+    /**
+     * Set up the test
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->bucket = config('filesystems.disks.gcs.bucket');
+    }
+
+    /**
      * Test the profile update endpoint
      *
      * @return void
@@ -43,20 +62,21 @@ class ProfileTest extends TestCase
                 ]
             ]);
 
-        // Assert the profile picture exists in the storage
-        Storage::assertExists('' . $response['data']['user']['profile_picture']);
+        $filename = explode('/', $response['data']['user']['profile_picture'])[4];
+
+        // Assert that the profile picture has been uploaded
+        Storage::assertExists('/' . $filename);
 
         // Assert the user is updated in the database
         $this->assertDatabaseMissing('users', [
             'id' => $user->id,
             'name' => $user->name
         ]);
-
         // Assert the user is updated in the database
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
             'name' => 'John Doe',
-            'profile_picture' => $response['data']['user']['profile_picture']
+            'profile_picture' => $filename,
         ]);
     }
 
