@@ -9,6 +9,13 @@ use Illuminate\Http\JsonResponse;
 
 class ChangePasswordController extends Controller
 {
+    /**
+     * Change password
+     *
+     * @param ChangePasswordRequest $request
+     * @param ChangePasswordAction $action
+     * @return JsonResponse
+     */
     public function index(ChangePasswordRequest $request, ChangePasswordAction $action): JsonResponse
     {
         $action->run($request->validated());
