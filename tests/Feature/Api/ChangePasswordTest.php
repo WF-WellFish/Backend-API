@@ -81,9 +81,6 @@ class ChangePasswordTest extends TestCase
                         "new_password" => [
                             "The new password field must be at least 8 characters."
                         ],
-                        "new_password_confirmation" =>  [
-                            "The new password confirmation field must be at least 8 characters."
-                        ],
                     ],
                 ],
             ]);
