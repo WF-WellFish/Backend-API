@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Rules\ValidUsername;
 use App\Traits\ApiTrait;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rules\Password;
 
 class RegisterRequest extends FormRequest
 {
@@ -30,8 +32,8 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'username' => 'required|string|unique:users,username',
-            'password' => 'required|string',
+            'username' => ['required', 'string', 'unique:users,username', new ValidUsername()],
+            'password' => ['required', 'string', Password::min(8)]
         ];
     }
 

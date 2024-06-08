@@ -40,11 +40,14 @@ class UpdateProfileRequest extends FormRequest
      *
      * @param Validator $validator
      * @return void
+     * @throws HttpResponseException
      */
     protected function failedValidation(Validator $validator): void
     {
         throw new HttpResponseException(
-            $this->error(['errors' => $validator->errors()], 'Request update validation failed', 422)
+            $this->error([
+                "errors" => $validator->errors()
+            ], 'Request validation failed.', 422)
         );
     }
 }

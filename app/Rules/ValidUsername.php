@@ -19,7 +19,7 @@ class ValidUsername implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if(!preg_match('/^[a-zA-Z0-9_-]+$/', $value)) {
-            $fail('The :attribute must be alphanumeric and may contain dashes and underscores.');
+            $fail('The :attribute must only contain letters, numbers, underscores, and dashes.');
         }
     }
 }

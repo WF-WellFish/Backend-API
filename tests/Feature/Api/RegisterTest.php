@@ -14,7 +14,9 @@ class RegisterTest extends TestCase
      */
     public function test_register_new_user(): void
     {
-        $userFactory = User::factory()->make()->toArray();
+        $userFactory = User::factory()->make([
+            'username' => 'test_user'
+        ])->toArray();
 
         $response = $this->postJson(route('register'), array_merge($userFactory, ['password' => 'password']))
         ->assertStatus(201)
@@ -73,5 +75,61 @@ class RegisterTest extends TestCase
         ]);
 
         $this->assertDatabaseCount('users', 1);
+    }
+
+    /**
+     * Test user cannot register with invalid username
+     *
+     * @return void
+     */
+    public function test_register_with_invalid_username(): void
+    {
+        $userFactory = User::factory()->make([
+            'username' => 'test user'
+        ])->toArray();
+
+        $response = $this->postJson(route('register'), array_merge($userFactory, ['password' => 'password']))
+        ->assertStatus(422)
+        ->assertJson([
+            "status" => "error",
+            "message" => "Request validation failed.",
+            "data" => [
+                "errors" => [
+                    "username" => [
+                        "The username must only contain letters, numbers, underscores, and dashes."
+                    ]
+                ]
+            ]
+        ]);
+
+        $this->assertDatabaseCount('users', 0);
+    }
+
+    /**
+     * Test user cannot register with invalid password
+     *
+     * @return void
+     */
+    public function test_register_with_invalid_password(): void
+    {
+        $userFactory = User::factory()->make([
+            'username' => 'test_user'
+        ])->toArray();
+
+        $response = $this->postJson(route('register'), array_merge($userFactory, ['password' => 'pass']))
+        ->assertStatus(422)
+        ->assertJson([
+            "status" => "error",
+            "message" => "Request validation failed.",
+            "data" => [
+                "errors" => [
+                    "password" => [
+                        "The password field must be at least 8 characters."
+                    ]
+                ]
+            ]
+        ]);
+
+        $this->assertDatabaseCount('users', 0);
     }
 }
