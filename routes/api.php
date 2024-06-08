@@ -3,12 +3,10 @@
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\Api\RegisterController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(ProfileController::class)->group(function () {
-        Route::get('profile', 'index')->name('profile');
         Route::put('profile/{user}', 'update')->name('profile.update');
     });
 
@@ -16,7 +14,6 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // TODO : bikin user yang sudah login tidak bisa access register dan login
-Route::post('register', [RegisterController::class, 'index'])->name('register');
 Route::post('login', [LoginController::class, 'index'])->name('login');
 
 Route::get('/', function () {

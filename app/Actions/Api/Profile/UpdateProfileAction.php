@@ -5,9 +5,12 @@ namespace App\Actions\Api\Profile;
 use App\Actions\Action;
 use App\Models\User;
 use Carbon\Carbon;
+use http\Exception\RuntimeException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use League\Flysystem\UnableToSetVisibility;
+use League\Flysystem\UnableToWriteFile;
 
 class UpdateProfileAction extends Action
 {
@@ -35,13 +38,16 @@ class UpdateProfileAction extends Action
      */
     private function uploadImage(UploadedFile $image): string
     {
-        $originalName = $image->getClientOriginalName();
-        $extension = $image->getClientOriginalExtension();
-        $now = Carbon::now();
-        $fileName = md5($originalName . $now . Str::random(8)) . '.' . $extension;
+        try {
+            $originalName = $image->getClientOriginalName();
+            $extension = $image->getClientOriginalExtension();
+            $now = Carbon::now();
+            $fileName = md5($originalName . $now . Str::random(8)) . '.' . $extension;
 
-        // TODO: Upload image to google cloud storage
-        Storage::disk('public')->putFileAs('profile_pictures', $image, $fileName);
+            Storage::putFileAs('', $image, $fileName);
+        } catch(UnableToWriteFile|UnableToSetVisibility $e) {
+            throw new RuntimeException('Failed to upload image.');
+        }
 
         return $fileName;
     }

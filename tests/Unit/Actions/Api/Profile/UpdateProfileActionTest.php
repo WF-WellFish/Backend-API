@@ -22,7 +22,7 @@ class UpdateProfileActionTest extends TestCase
 
         $oldUser = $user->toArray();
 
-        Storage::fake('public');
+        Storage::fake();
 
         $updatedUser = UpdateProfileAction::run($user, [
             'name' => 'John Doe',
@@ -30,7 +30,7 @@ class UpdateProfileActionTest extends TestCase
         ]);
 
         // Assert that the profile picture has been uploaded
-        Storage::disk('public')->assertExists('profile_pictures/' . $updatedUser->profile_picture);
+        Storage::assertExists('/' . $updatedUser->profile_picture);
 
         // Assert that the user has been updated
         $this->assertDatabaseHas('users', [
