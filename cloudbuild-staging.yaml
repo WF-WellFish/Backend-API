@@ -61,7 +61,13 @@ steps:
     args:
       - '-c'
       - |
-        gcloud compute ssh backend-api-staging --zone=asia-southeast2-b --command="./pull.sh"
+        mkdir -p ~/root/.ssh && \\
+        gcloud secrets versions access latest --secret=wf-cb-staging-ssh-key > ~/root/.ssh/id_rsa && \\
+        chmod 600 ~/root/.ssh/id_rsa && \\
+        gcloud secrets versions access latest --secret=wf-cb-staging-ssh-key-pub > ~/root/.ssh/id_rsa.pub && \\
+        chmod 600 ~/root/.ssh/id_rsa.pub && \\
+        set -x && \\
+        gcloud compute ssh backend-api-staging --ssh-key-file=~/root/.ssh/id_rsa --zone=asia-southeast2-b
 
 # Specify the timeout
 timeout: '1200s'
