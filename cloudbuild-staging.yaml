@@ -50,6 +50,21 @@ steps:
         docker-php-ext-install gd
         vendor/bin/phpunit
 
+  # Step 4: Deploy to Compute Engine via SSH
+  - id: 'Deploy to Compute engine via ssh'
+    name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud compute ssh backend-api-staging --zone=asia-southeast2-b --command="cd /var/www/backend
+        && git pull
+        && php artisan migrate
+        && php artisan db:seed
+        && php artisan config:cache
+        && php artisan route:cache
+        && php artisan view:cache"
+
 # Specify the timeout
 timeout: '1200s'
 availableSecrets:
