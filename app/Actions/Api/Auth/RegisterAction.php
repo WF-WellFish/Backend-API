@@ -7,7 +7,6 @@ use App\Models\User;
 
 class RegisterAction extends Action
 {
-    //TODO: Bikin unit test nya
     /**
      * Function to handle the registration of a new user
      *

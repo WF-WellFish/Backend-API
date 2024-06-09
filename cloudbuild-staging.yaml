@@ -38,7 +38,6 @@ steps:
         vendor/bin/pint --test
 
   #TODO : Fix masalah connect ke mysql instance ini kalau mysql instance nya gk ngasih network 0.0.0.0/0 dia gk mau ke connect
-  #TODO: bikin image untuk phpnya biar gk perlu install2 lagi
   # Step 3: Run the PHPUnit tests
   - id: 'Run PHPUnit tests'
     name: 'gcr.io/wellfish/php8.2-cli'
