@@ -6,7 +6,7 @@ steps:
 
   # Step 1: Create the .env.testing files
   - id: 'Create setup env testing file'
-    name: 'php:8.2-cli'
+    name: 'gcr.io/wellfish/php8.2-cli'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -30,7 +30,7 @@ steps:
 
   # Step 2: Run Pint lint check
   - id: 'Check Code style using Pint'
-    name: 'php:8.2-cli'
+    name: 'gcr.io/wellfish/php8.2-cli'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -41,33 +41,27 @@ steps:
   #TODO: bikin image untuk phpnya biar gk perlu install2 lagi
   # Step 3: Run the PHPUnit tests
   - id: 'Run PHPUnit tests'
-    name: 'php:8.2-cli'
+    name: 'gcr.io/wellfish/php8.2-cli'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        apt-get update
-        apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev libzip-dev unzip
-        docker-php-ext-install pdo pdo_mysql gd zip bcmath
-        # install gd
-        docker-php-ext-configure gd --enable-gd --with-jpeg
-        docker-php-ext-install gd
         vendor/bin/phpunit
 
-  # Step 4: Deploy to Compute Engine via SSH
-  - id: 'Deploy to Compute engine via ssh'
-    name: 'gcr.io/cloud-builders/gcloud'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        mkdir -p ~/root/.ssh && \\
-        gcloud secrets versions access latest --secret=wf-cb-staging-ssh-key > ~/root/.ssh/id_rsa && \\
-        chmod 600 ~/root/.ssh/id_rsa && \\
-        gcloud secrets versions access latest --secret=wf-cb-staging-ssh-key-pub > ~/root/.ssh/id_rsa.pub && \\
-        chmod 600 ~/root/.ssh/id_rsa.pub && \\
-        set -x && \\
-        gcloud compute ssh backend-api-staging --ssh-key-file=~/root/.ssh/id_rsa --zone=asia-southeast2-b
+#  # Step 4: Deploy to Compute Engine via SSH
+#  - id: 'Deploy to Compute engine via ssh'
+#    name: 'gcr.io/cloud-builders/gcloud'
+#    entrypoint: '/bin/sh'
+#    args:
+#      - '-c'
+#      - |
+#        mkdir -p ~/root/.ssh && \\
+#        gcloud secrets versions access latest --secret=wf-cb-staging-ssh-key > ~/root/.ssh/id_rsa && \\
+#        chmod 600 ~/root/.ssh/id_rsa && \\
+#        gcloud secrets versions access latest --secret=wf-cb-staging-ssh-key-pub > ~/root/.ssh/id_rsa.pub && \\
+#        chmod 600 ~/root/.ssh/id_rsa.pub && \\
+#        set -x && \\
+#        gcloud compute ssh backend-api-staging --ssh-key-file=~/root/.ssh/id_rsa --zone=asia-southeast2-b
 
 # Specify the timeout
 timeout: '1200s'
