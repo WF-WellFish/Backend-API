@@ -61,13 +61,7 @@ steps:
     args:
       - '-c'
       - |
-        gcloud compute ssh backend-api-staging --zone=asia-southeast2-b --command="cd /var/www/backend
-        && sudo git pull
-        && sudo php artisan migrate
-        && sudo php artisan db:seed
-        && sudo php artisan config:cache
-        && sudo php artisan route:cache
-        && sudo php artisan view:cache"
+        gcloud compute ssh backend-api-staging --zone=asia-southeast2-b --command="./pull.sh"
 
 # Specify the timeout
 timeout: '1200s'
