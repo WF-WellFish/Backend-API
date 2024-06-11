@@ -14,6 +14,7 @@ class ClassificationHistoryTest extends TestCase
      */
     public function test_get_classification_history(): void
     {
+        $this->withoutExceptionHandling();
         $user = $this->createUser();
         $this->actingAs($user);
 
@@ -46,6 +47,7 @@ class ClassificationHistoryTest extends TestCase
      */
     public function test_user_cant_get_classification_history_when_not_authenticated(): void
     {
+        $this->withoutExceptionHandling();
         $this->getJson(route('classification.history'))
             ->assertStatus(401)
             ->assertJson([
@@ -62,6 +64,9 @@ class ClassificationHistoryTest extends TestCase
      */
     public function test_maximum_history_classification(): void
     {
+        $this->withoutExceptionHandling();
+
+
         $user = $this->createUser();
         $this->actingAs($user);
 
@@ -81,6 +86,8 @@ class ClassificationHistoryTest extends TestCase
      */
     public function test_get_fish_classification_detail_by_id(): void
     {
+        $this->withoutExceptionHandling();
+
         $user = $this->createUser();
         $this->actingAs($user);
 
