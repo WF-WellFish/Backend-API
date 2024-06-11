@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use http\Exception\RuntimeException;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use League\Flysystem\UnableToSetVisibility;
@@ -17,16 +18,15 @@ class UpdateProfileAction extends Action
     /**
      * Update user profile information.
      *
-     * @param User $user
      * @param array $data
      * @return User
      */
-    public function handle(User $user, array $data): User
+    public function handle(array $data): User
     {
         if($data['profile_picture'] ?? false) {
             $data['profile_picture'] = $this->uploadImage($data['profile_picture']);
         }
-
+        $user = Auth::user();
         return tap($user)->update($data);
     }
 

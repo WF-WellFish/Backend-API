@@ -10,25 +10,6 @@ use Tests\TestCase;
 class ProfileTest extends TestCase
 {
     /**
-     * The bucket name of the Google Cloud Storage
-     *
-     * @var string
-     */
-    private string $bucket;
-
-    /**
-     * Set up the test
-     *
-     * @return void
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->bucket = config('filesystems.disks.gcs.bucket');
-    }
-
-    /**
      * Test the profile update endpoint
      *
      * @return void
@@ -37,6 +18,7 @@ class ProfileTest extends TestCase
     {
         // Create a user
         $user = $this->createUser();
+        $oldUser = $user->toArray();
 
         // Authenticate the user
         $this->actingAs($user);
@@ -45,8 +27,8 @@ class ProfileTest extends TestCase
         Storage::fake();
 
         // Send a PUT request to the profile update endpoint
-        $response = $this->putJson(route('profile.update', $user->id), [
-            'name' => 'John Doe',
+        $response = $this->putJson(route('profile.update'), [
+            'name' => 'John Doe 123',
             'profile_picture' => UploadedFile::fake()->image('profile.jpg')
         ])
             ->assertStatus(200)
@@ -70,12 +52,12 @@ class ProfileTest extends TestCase
         // Assert the user is updated in the database
         $this->assertDatabaseMissing('users', [
             'id' => $user->id,
-            'name' => $user->name
+            'name' => $oldUser['name'],
         ]);
         // Assert the user is updated in the database
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
-            'name' => 'John Doe',
+            'name' => 'John Doe 123',
             'profile_picture' => $filename,
         ]);
     }
@@ -97,7 +79,7 @@ class ProfileTest extends TestCase
         Storage::fake();
 
         // Send a PUT request to the profile update endpoint
-        $this->putJson(route('profile.update', $user->id), [
+        $this->putJson(route('profile.update'), [
             'name' => '',
             'profile_picture' => 'invalid-image'
         ])

@@ -24,14 +24,14 @@ return Application::configure(basePath: dirname(__DIR__))
                     return response()->json([
                         'status' => 'error',
                         'message' => $e->getMessage(),
-                        'data' => null,
+                        'data' => [],
                     ], Response::HTTP_UNAUTHORIZED);
                 }
 
                 return response()->json([
                     'status' => 'error',
                     'message' => $e->getMessage(),
-                    'data' => null,
+                    'data' => [],
                 ], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         });

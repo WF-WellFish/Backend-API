@@ -19,12 +19,13 @@ class UpdateProfileActionTest extends TestCase
         $user = $this->createUser([
             'name' => 'fake name'
         ]);
+        $this->actingAs($user);
 
         $oldUser = $user->toArray();
 
         Storage::fake();
 
-        $updatedUser = UpdateProfileAction::run($user, [
+        $updatedUser = UpdateProfileAction::run([
             'name' => 'John Doe',
             'profile_picture' => UploadedFile::fake()->image('profile.jpg')
         ]);

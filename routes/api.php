@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ChangePasswordController;
+use App\Http\Controllers\Api\ClassificationController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\ProfileController;
@@ -9,11 +10,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(ProfileController::class)->group(function () {
-        Route::put('profile/{user}', 'update')->name('profile.update');
+        Route::put('profile', 'update')->name('profile.update');
     });
 
     Route::get('logout', [LogoutController::class, 'index'])->name('logout');
     Route::post('change-password', [ChangePasswordController::class, 'index'])->name('change-password');
+
+    Route::post('classification', [ClassificationController::class, 'index'])->name('classification');
 });
 
 // TODO : bikin user yang sudah login tidak bisa access register dan login

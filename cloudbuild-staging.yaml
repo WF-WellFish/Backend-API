@@ -47,6 +47,7 @@ steps:
       - |
         vendor/bin/phpunit
 
+  #TODO : Bikin CD saat ini bermasalah karena ssh nya gk bisa connect ke compute engine nya
 #  # Step 4: Deploy to Compute Engine via SSH
 #  - id: 'Deploy to Compute engine via ssh'
 #    name: 'gcr.io/cloud-builders/gcloud'

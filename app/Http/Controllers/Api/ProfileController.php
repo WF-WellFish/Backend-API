@@ -15,13 +15,12 @@ class ProfileController extends Controller
      * Update user profile information.
      *
      * @param UpdateProfileRequest $request
-     * @param User $user
      * @param UpdateProfileAction $action
      * @return JsonResponse
      */
-    public function update(UpdateProfileRequest $request, User $user, UpdateProfileAction $action): JsonResponse
+    public function update(UpdateProfileRequest $request, UpdateProfileAction $action): JsonResponse
     {
-        $user = $action->run($user, $request->validated());
+        $user = $action->run($request->validated());
 
         return $this->success([
             'user' => new UserResource($user)

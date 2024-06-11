@@ -3,5 +3,5 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return 'Hello, world!';
+    return 'Hello, welcome to Wellfish API';
 });
