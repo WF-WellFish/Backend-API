@@ -51,12 +51,12 @@ class ClassificationController extends Controller
      */
     public function history(ClassificationAction $action): JsonResponse
     {
-//        $classifications = ClassificationHistory::query()->where('user_id', Auth::id())->get([
-//            'id',
-//            'fish_name',
-//            'image_url',
-//            'created_at'
-//        ]);
+        //        $classifications = ClassificationHistory::query()->where('user_id', Auth::id())->get([
+        //            'id',
+        //            'fish_name',
+        //            'image_url',
+        //            'created_at'
+        //        ]);
         return $this->success([], 'Fish classification history.', 200);
     }
 }
