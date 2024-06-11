@@ -24,7 +24,7 @@ class ProfileTest extends TestCase
         $this->actingAs($user);
 
         // Create a fake storage disk for testing
-        Storage::fake();
+        Storage::fake('gcs-public');
 
         // Send a PUT request to the profile update endpoint
         $response = $this->putJson(route('profile.update'), [
@@ -47,7 +47,7 @@ class ProfileTest extends TestCase
         $filename = explode('/', $response['data']['user']['profile_picture'])[4];
 
         // Assert that the profile picture has been uploaded
-        Storage::assertExists('/' . $filename);
+        Storage::disk('gcs-public')->assertExists('/profile-pictures/' . $filename);
 
         // Assert the user is updated in the database
         $this->assertDatabaseMissing('users', [
@@ -76,7 +76,7 @@ class ProfileTest extends TestCase
         $this->actingAs($user);
 
         // Create a fake storage disk for testing
-        Storage::fake();
+        Storage::fake('gcs-public');
 
         // Send a PUT request to the profile update endpoint
         $this->putJson(route('profile.update'), [
@@ -103,6 +103,6 @@ class ProfileTest extends TestCase
         ]);
 
         // Assert the profile picture does not exist in the storage
-        Storage::assertMissing('/invalid-image');
+        Storage::disk('gcs-public')->assertMissing('/profile-pictures/invalid-image');
     }
 }

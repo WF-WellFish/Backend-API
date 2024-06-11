@@ -18,8 +18,8 @@ steps:
         sed -i "s/^DB_DATABASE=.*/DB_DATABASE=wellfish_test/" .env.testing
         sed -i "s/^DB_USERNAME=.*/DB_USERNAME=root/" .env.testing
         sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=$$DB_PASSWORD_ST/" .env.testing
-        sed -i "s/^FILESYSTEM_DRIVER=.*/FILESYSTEM_DRIVER=gcs/" .env.testing
-        sed -i "s/^GOOGLE_CLOUD_STORAGE_BUCKET=.*/GOOGLE_CLOUD_STORAGE_BUCKET=wellfish-profile-picture-staging/" .env.testing
+        sed -i "s/^GOOGLE_CLOUD_STORAGE_BUCKET=.*/GOOGLE_CLOUD_STORAGE_BUCKET=wellfish-staging/" .env.testing
+        sed -i "s/^GOOGLE_CLOUD_STORAGE_BUCKET_PUBLIC=.*/GOOGLE_CLOUD_STORAGE_BUCKET_PUBLIC=wellfish-staging-public/" .env.testing
         sed -i "s/^GOOGLE_CLOUD_PROJECT_ID=.*/GOOGLE_CLOUD_PROJECT_ID=wellfish/" .env.testing
         # ls -la
         # cat .env.testing
