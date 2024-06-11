@@ -4,6 +4,7 @@ namespace App\Actions\Api\MachineLearning;
 
 use App\Actions\Action;
 use App\Models\ClassificationHistory;
+use App\Services\UploadImageService;
 use Illuminate\Support\Facades\Auth;
 
 class ClassificationAction extends Action
@@ -29,11 +30,16 @@ class ClassificationAction extends Action
         //
 
         // temporary result only for testing, replace with the actual result from the machine learning API
-        $result = $this->randomResult();
+        $image = app(UploadImageService::class)->uploadImagePublic($data['image'], 'classification-histories');
 
-        ClassificationHistory::query()->create(
-            array_merge($result, ['user_id' => Auth::user()->id])
-        );
+        $result =  array_merge([
+            'user_id' => Auth::user()->id,
+            'picture' => $image['file_name'],
+        ], $this->randomResult());
+
+        ClassificationHistory::query()->create($result);
+
+        $result['picture'] = $image['url'];
 
         return $result;
     }
@@ -41,11 +47,11 @@ class ClassificationAction extends Action
     private function randomResult(): array
     {
         return [
-            'fish_name' => 'fish name ' . $this->randomNumber(),
-            'fish_type' => 'fish type ' . $this->randomNumber(),
-            'fish_description' => 'fish description ' . $this->randomNumber(),
-            'fish_food' => 'fish food ' . $this->randomNumber(),
-            'fish_food_shop' => 'fish food shop ' . $this->randomNumber(),
+            'name' => 'fish name ' . $this->randomNumber(),
+            'type' => 'fish type ' . $this->randomNumber(),
+            'description' => 'fish description ' . $this->randomNumber(),
+            'food' => 'fish food ' . $this->randomNumber(),
+            'food_shop' => 'fish food shop ' . $this->randomNumber(),
         ];
     }
 

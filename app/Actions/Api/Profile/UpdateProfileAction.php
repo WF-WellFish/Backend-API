@@ -18,8 +18,10 @@ class UpdateProfileAction extends Action
     public function handle(array $data): User
     {
         if($data['profile_picture'] ?? false) {
-            $data['profile_picture'] = app(UploadImageService::class)->uploadImagePublic($data['profile_picture'], 'profile-pictures');
+            $profilePicture = app(UploadImageService::class)->uploadImagePublic($data['profile_picture'], 'profile-pictures');
         }
+
+        $data['profile_picture'] = $profilePicture['file_name'] ?? null;
 
         $user = Auth::user();
         return tap($user)->update($data);

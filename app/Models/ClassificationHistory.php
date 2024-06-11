@@ -24,11 +24,12 @@ class ClassificationHistory extends Model
      */
     protected $fillable = [
         'user_id',
-        'fish_name',
-        'fish_type',
-        'fish_description',
-        'fish_food',
-        'fish_food_shop',
+        'name',
+        'type',
+        'description',
+        'food',
+        'food_shop',
+        'picture',
         'created_at',
         'updated_at',
     ];

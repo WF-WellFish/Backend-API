@@ -23,11 +23,12 @@ class ClassificationController extends Controller
         $classified = $action->run($request->validated());
 
         return $this->success([
-            'name' => $classified['fish_name'],
-            'type' => $classified['fish_type'],
-            'description' => $classified['fish_description'],
-            'food' => $classified['fish_food'],
-            'food_shop' => $classified['fish_food_shop'],
+            'name' => $classified['name'],
+            'type' => $classified['type'],
+            'description' => $classified['description'],
+            'food' => $classified['food'],
+            'food_shop' => $classified['food_shop'],
+            'picture' => $classified['picture']
         ], 'Image has been classified.', 200);
     }
 

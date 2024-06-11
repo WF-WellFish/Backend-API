@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ClassificationTest extends TestCase
@@ -18,6 +19,8 @@ class ClassificationTest extends TestCase
 
         $this->actingAs($user);
 
+        Storage::fake('gcs-public');
+
         $response = $this->postJson(route('classification'), [
             'image' => UploadedFile::fake()->image('fish.jpg')
         ])
@@ -31,19 +34,25 @@ class ClassificationTest extends TestCase
                     'description',
                     'food',
                     'food_shop',
+                    'picture'
                 ],
             ]);
 
         $this->assertDatabaseCount('classification_histories', 1);
 
+        $fileName = explode('classification-histories/', $response['data']['picture'])[1];
+
         $this->assertDatabaseHas('classification_histories', [
             'user_id' => $user->id,
-            'fish_name' => $response['data']['name'],
-            'fish_type' => $response['data']['type'],
-            'fish_description' => $response['data']['description'],
-            'fish_food' => $response['data']['food'],
-            'fish_food_shop' => $response['data']['food_shop'],
+            'name' => $response['data']['name'],
+            'type' => $response['data']['type'],
+            'description' => $response['data']['description'],
+            'food' => $response['data']['food'],
+            'food_shop' => $response['data']['food_shop'],
+            'picture' => $fileName,
         ]);
+
+        Storage::disk('gcs-public')->assertExists('classification-histories/' . $fileName);
     }
 
     /**

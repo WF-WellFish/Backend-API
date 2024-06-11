@@ -22,11 +22,13 @@ class UploadImageServiceTest extends TestCase
 
         $image = UploadedFile::fake()->image('image.jpg');
 
-        $fileName = $service->uploadImage($image);
+        $file = $service->uploadImage($image);
 
-        Storage::disk('gcs')->assertExists('/' . $fileName);
+        $this->assertIsArray($file);
+        $this->assertArrayHasKey('file_name', $file);
+        $this->assertArrayHasKey('url', $file);
 
-        $this->assertIsString($fileName);
+        Storage::disk('gcs')->assertExists('/' . $file['file_name']);
     }
 
     /**
@@ -42,10 +44,12 @@ class UploadImageServiceTest extends TestCase
 
         $image = UploadedFile::fake()->image('image.jpg');
 
-        $fileName = $service->uploadImagePublic($image, 'profile-pictures');
+        $file = $service->uploadImagePublic($image, 'profile-pictures');
 
-        Storage::disk('gcs-public')->assertExists('/profile-pictures/' . $fileName);
+        Storage::disk('gcs-public')->assertExists('/profile-pictures/' . $file['file_name']);
 
-        $this->assertIsString($fileName);
+        $this->assertIsArray($file);
+        $this->assertArrayHasKey('file_name', $file);
+        $this->assertArrayHasKey('url', $file);
     }
 }

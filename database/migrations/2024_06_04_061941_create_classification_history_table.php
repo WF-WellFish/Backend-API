@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('classification_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('fish_name');
-            $table->string('fish_type');
-            $table->string('fish_description')->nullable();
-            $table->string('fish_food')->nullable();
-            $table->string('fish_food_shop')->nullable();
+            $table->string('name');
+            $table->string('type');
+            $table->string('description')->nullable();
+            $table->string('food')->nullable();
+            $table->string('food_shop')->nullable();
+            $table->string('picture');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('table_classification_history');
+        Schema::dropIfExists('classification_histories');
     }
 };

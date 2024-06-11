@@ -54,6 +54,7 @@ class ProfileTest extends TestCase
             'id' => $user->id,
             'name' => $oldUser['name'],
         ]);
+
         // Assert the user is updated in the database
         $this->assertDatabaseHas('users', [
             'id' => $user->id,

@@ -18,9 +18,9 @@ class UploadImageService
      * @param UploadedFile $image
      * @param string $path
      * @param string $disk
-     * @return string
+     * @return array
      */
-    public function uploadImage(UploadedFile $image, string $path = '', string $disk = 'gcs'): string
+    public function uploadImage(UploadedFile $image, string $path = '', string $disk = 'gcs'): array
     {
         try {
             $originalName = $image->getClientOriginalName();
@@ -33,7 +33,10 @@ class UploadImageService
             throw new RuntimeException('Failed to upload image.');
         }
 
-        return $fileName;
+        return [
+            'file_name' => $fileName,
+            'url' => Storage::disk($disk)->url($path . '/' . $fileName)
+        ];
     }
 
     /**
@@ -41,9 +44,9 @@ class UploadImageService
      *
      * @param UploadedFile $image
      * @param string $path
-     * @return string
+     * @return array
      */
-    public function uploadImagePublic(UploadedFile $image, string $path = ''): string
+    public function uploadImagePublic(UploadedFile $image, string $path = ''): array
     {
         return $this->uploadImage($image, $path, 'gcs-public');
     }
