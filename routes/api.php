@@ -18,7 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(ClassificationController::class)->group(function () {
         Route::post('classification', 'index')->name('classification');
-        Route::get('classification/{id}', 'show')->name('classification.show');
+        Route::get('classification-history/{history}', 'show')->name('classification.show');
         Route::get('classification-history', 'history')->name('classification.history');
     });
 });

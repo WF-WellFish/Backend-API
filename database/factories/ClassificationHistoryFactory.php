@@ -17,11 +17,12 @@ class ClassificationHistoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'fish_name' => $this->faker->name(),
-            'fish_type' => $this->faker->name(),
-            'fish_description' => $this->faker->sentence(),
-            'fish_food' => $this->faker->name(),
-            'fish_food_shop' => $this->faker->name(),
+            'name' => $this->faker->name(),
+            'type' => $this->faker->name(),
+            'description' => $this->faker->sentence(),
+            'food' => $this->faker->name(),
+            'food_shop' => $this->faker->name(),
+            'picture' => $this->faker->name(),
         ];
     }
 }

@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Actions\Api\MachineLearning\ClassificationAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ClassificationRequest;
+use App\Http\Resources\ClassificationHistoryResource;
 use App\Models\ClassificationHistory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class ClassificationController extends Controller
 {
@@ -35,29 +37,43 @@ class ClassificationController extends Controller
     /**
      * Show fish classification by id.
      *
-     * @param int $id
-     * @param ClassificationAction $action
+     * @param ClassificationHistory $history
+     * @param Request $request
      * @return JsonResponse
      */
-    public function show(int $id, ClassificationAction $action): JsonResponse
+    public function show(ClassificationHistory $history, Request $request): JsonResponse
     {
-        return $this->success([], 'Fish classification by id.', 200);
+        $resourceData = (new ClassificationHistoryResource($history))->toArray($request);
+
+        return $this->success($resourceData, 'Fish classification by id.', 200);
     }
 
     /**
      * Show fish classification history.
      *
-     * @param ClassificationAction $action
      * @return JsonResponse
      */
-    public function history(ClassificationAction $action): JsonResponse
+    public function history(): JsonResponse
     {
-        //        $classifications = ClassificationHistory::query()->where('user_id', Auth::id())->get([
-        //            'id',
-        //            'fish_name',
-        //            'image_url',
-        //            'created_at'
-        //        ]);
-        return $this->success([], 'Fish classification history.', 200);
+        // TODO: Implement repository pattern.
+        $classifications = ClassificationHistory::query()->where('user_id', Auth::id())
+            ->latest()
+            ->take(15)
+            ->get([
+                'id',
+                'name',
+                'picture',
+                'created_at'
+            ])
+            ->map(function (ClassificationHistory $classification) {
+                return [
+                    'id' => $classification->id,
+                    'name' => $classification->name,
+                    'picture' => $classification->picture_url,
+                    'created_at' => $classification->created_at->diffForHumans()
+                ];
+            });
+
+        return $this->success($classifications->toArray(), 'Fish classification history.', 200);
     }
 }
