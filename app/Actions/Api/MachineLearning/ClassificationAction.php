@@ -27,12 +27,28 @@ class ClassificationAction extends Action
         //
 
         // temporary result only for testing, replace with the actual result from the machine learning API
-        $result = ClassificationHistory::factory()->make()->toArray();
+        $result = $this->randomResult();
 
         ClassificationHistory::query()->create(
             array_merge($result, ['user_id' => Auth::user()->id])
         );
 
         return $result;
+    }
+
+    private function randomResult(): array
+    {
+        return [
+            'fish_name' => 'fish name ' . $this->randomNumber(),
+            'fish_type' => 'fish type ' . $this->randomNumber(),
+            'fish_description' => 'fish description ' . $this->randomNumber(),
+            'fish_food' => 'fish food ' . $this->randomNumber(),
+            'fish_food_shop' => 'fish food shop ' . $this->randomNumber(),
+        ];
+    }
+
+    private function randomNumber(): int
+    {
+        return rand(1, 100);
     }
 }
