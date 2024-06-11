@@ -16,7 +16,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('logout', [LogoutController::class, 'index'])->name('logout');
     Route::post('change-password', [ChangePasswordController::class, 'index'])->name('change-password');
 
-    Route::post('classification', [ClassificationController::class, 'index'])->name('classification');
+    Route::controller(ClassificationController::class)->group(function () {
+        Route::post('classification', 'index')->name('classification');
+        Route::get('classification/{id}', 'show')->name('classification.show');
+        Route::get('classification-history', 'history')->name('classification.history');
+    });
 });
 
 // TODO : bikin user yang sudah login tidak bisa access register dan login
