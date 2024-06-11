@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('classification_history', function (Blueprint $table) {
+        Schema::create('classification_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('fish_name');
             $table->string('fish_type');
             $table->string('fish_description')->nullable();
             $table->string('fish_food')->nullable();
-            $table->string('fish_food_stall')->nullable();
+            $table->string('fish_food_shop')->nullable();
             $table->timestamps();
         });
     }

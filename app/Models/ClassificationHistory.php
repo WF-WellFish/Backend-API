@@ -15,7 +15,7 @@ class ClassificationHistory extends Model
      *
      * @var string
      */
-    protected $table = 'classification_history';
+    protected $table = 'classification_histories';
 
     /**
      * The attributes that are mass assignable.
@@ -28,7 +28,7 @@ class ClassificationHistory extends Model
         'fish_type',
         'fish_description',
         'fish_food',
-        'fish_food_stall',
+        'fish_food_shop',
         'created_at',
         'updated_at',
     ];

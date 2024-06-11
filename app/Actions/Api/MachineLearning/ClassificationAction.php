@@ -4,10 +4,18 @@ namespace App\Actions\Api\MachineLearning;
 
 use App\Actions\Action;
 use App\Models\ClassificationHistory;
+use Illuminate\Support\Facades\Auth;
 
 class ClassificationAction extends Action
 {
-    public function handle(array $data): string
+    /**
+     * Classify user image and store the result in the database.
+     * Call the machine learning API to classify the image.
+     *
+     * @param array $data
+     * @return array
+     */
+    public function handle(array $data): array
     {
         //        try {
         //        $response = Http::post('http://localhost:5000/classification', [
@@ -17,15 +25,14 @@ class ClassificationAction extends Action
         //            return $e->getMessage();
         //        }
         //
-        //        ClassificationHistory::query()->create([
-        //            'user_id',
-        //            'fish_name',
-        //            'fish_type',
-        //            'fish_description',
-        //            'fish_food',
-        //            'fish_food_stall',
-        //        ]);
 
-        return 'Image has been classified.';
+        // temporary result only for testing, replace with the actual result from the machine learning API
+        $result = ClassificationHistory::factory()->make()->toArray();
+
+        ClassificationHistory::query()->create(
+            array_merge($result, ['user_id' => Auth::user()->id])
+        );
+
+        return $result;
     }
 }
