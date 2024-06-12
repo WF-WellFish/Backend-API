@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ClassificationAction extends Action
 {
-    // TODO: make a unit test
     // Todo: implement the actual machine learning API call
     /**
      * Classify user image and store the result in the database.

@@ -8,6 +8,7 @@ Welcome to the WellFish Backend API! This API is developed using Laravel to supp
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Running Tests](#running-tests)
 - [API Documentation](#api-documentation)
 
 ### Introduction
@@ -25,18 +26,18 @@ WellFish is an innovative solution designed to assist consumers, fishermen, trad
 
 - PHP >= 8.2
 - Composer
-- MySQL
+- MySQL 8.0
 
 ### Installation
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/WF-WellFish/backend-api.git
-   cd backend-api
+    git clone https://github.com/WF-WellFish/backend-api.git
+    cd backend-api
 
 2. **Install dependencies**:
    ```bash
-   composer install
+    composer install
 
 3. **Set up environment variables**:
    ```bash
@@ -45,24 +46,64 @@ WellFish is an innovative solution designed to assist consumers, fishermen, trad
 
 4. **configure the env**
       ```bash
-      DB_CONNECTION=mysql
-      DB_HOST=<your_db_host>
-      DB_PORT=3306
-      DB_DATABASE=<your_db_name>
-      DB_USERNAME=<your_db_username>
-      DB_PASSWORD=<your_db_password>
+    DB_CONNECTION=mysql
+    DB_HOST=<your_db_host>
+    DB_PORT=3306 # you can change this if your db is running on a different port
+    DB_DATABASE=<your_db_name>
+    DB_USERNAME=<your_db_username>
+    DB_PASSWORD=<your_db_password>
+    GOOGLE_CLOUD_STORAGE_BUCKET=<your_gogolecloud_bucket>
+    GOOGLE_CLOUD_STORAGE_BUCKET_PUBLIC=<your_gogolecloud_bucket_public>
+    GOOGLE_CLOUD_PROJECT_ID=<your_gogolecloud_project_id>
 
 5. **Run the migrations**:
    ```bash
    php artisan migrate
 
-6. **Start the development server**:
+6. **Import your google service account with google cloud storage permissions to root folder The Structure Will Look like this**:
+   ```bash
+    artisan 
+    service-account.json
+    composer.json
+    composer.lock
+   
+7. **Start the development server**:
    ```bash
     php artisan serve
 
-7. **You're all set!**:
+8. **You're all set!**:
     Your backend API is now up and running. You can access the API at `http://localhost:8000`.
 
+### Running Tests
+1. **Create database for testing**:
+   ```bash
+    CREATE DATABASE database_name_testing;
+   
+2. **Create .env.testing file**:
+   ```bash
+    cp .env.example .env.testing
+    php artisan key:generate
+   
+3. **Configure the env**:
+    ```bash
+     APP_ENV=testing
+     DB_CONNECTION=mysql
+     DB_HOST=<your_db_host>
+     DB_PORT=3306 # you can change this if your db is running on a different port
+     DB_DATABASE=<your_db_name_testing>
+     DB_USERNAME=<your_db_username>
+     DB_PASSWORD=<your_db_password>
+     GOOGLE_CLOUD_STORAGE_BUCKET=<your_gogolecloud_bucket>
+     GOOGLE_CLOUD_STORAGE_BUCKET_PUBLIC=<your_gogolecloud_bucket_public>
+     GOOGLE_CLOUD_PROJECT_ID=<your_gogolecloud_project_id>
+
+4. **Run the tests**:
+   ```bash
+   php artisan test
+   
+5. **You're all set!**:
+    Your tests are now running.
+
 ### API Documentation
-The API documentation can be accessed at https://www.postman.com/gold-rocket-493207/workspace/wellfish-workspaces
+The API documentation can be accessed at https://documenter.getpostman.com/view/19448005/2sA3XMhNgf
 

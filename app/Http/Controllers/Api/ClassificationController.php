@@ -55,7 +55,6 @@ class ClassificationController extends Controller
      */
     public function history(): JsonResponse
     {
-        // TODO: Implement repository pattern.
         $classifications = ClassificationHistory::query()->where('user_id', Auth::id())
             ->latest()
             ->take(15)
