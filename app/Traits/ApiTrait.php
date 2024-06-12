@@ -16,10 +16,12 @@ trait ApiTrait
      */
     public function success(array $data = [], string $message = '', int|string $code = 200): JsonResponse
     {
+        $responseData = empty($data) ? new \stdClass() : $data;
+
         return response()->json([
             'status' => 'success',
             'message' => $message,
-            'data' => $data,
+            'data' => $responseData,
         ], $code);
     }
 
@@ -33,10 +35,12 @@ trait ApiTrait
      */
     public function error(array $data = [], string $message = '', int|string $code = 400): JsonResponse
     {
+        $responseData = empty($data) ? new \stdClass() : $data;
+
         return response()->json([
             'status' => 'error',
             'message' => $message,
-            'data' => $data
+            'data' => $responseData
         ], $code);
     }
 }

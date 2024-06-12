@@ -26,7 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     return response()->json([
                         'status' => 'error',
                         'message' => $e->getMessage(),
-                        'data' => [],
+                        'data' => new \stdClass()
                     ], Response::HTTP_UNAUTHORIZED);
                 }
 
@@ -34,14 +34,14 @@ return Application::configure(basePath: dirname(__DIR__))
                     return response()->json([
                         'status' => 'error',
                         'message' => 'Data not found',
-                        'data' => []
+                        'data' => new \stdClass()
                     ], Response::HTTP_NOT_FOUND);
                 }
 
                 return response()->json([
                     'status' => 'error',
                     'message' => $e->getMessage(),
-                    'data' => [],
+                    'data' => new \stdClass()
                 ], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         });
