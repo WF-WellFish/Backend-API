@@ -4,7 +4,6 @@ namespace Tests\Unit\Actions\Api\MachineLearning;
 
 use App\Actions\Api\MachineLearning\ClassificationAction;
 use Database\Seeders\FishSeeder;
-use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;

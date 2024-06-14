@@ -177,7 +177,7 @@ class ClassificationTest extends TestCase
     {
         Exceptions::fake();
         Http::fake([
-            config('machine-learning.api_url').'/classify' => function() {
+            config('machine-learning.api_url').'/classify' => function () {
                 throw new ConnectionException('Failed to connect to the machine learning API.');
             },
         ]);

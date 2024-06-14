@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Fish;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class FishSeeder extends Seeder
@@ -213,6 +212,6 @@ class FishSeeder extends Seeder
                 'description' => $item['description'],
                 'food' => $item['food'],
             ]);
-         }
+        }
     }
 }
