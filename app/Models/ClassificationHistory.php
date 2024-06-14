@@ -26,11 +26,7 @@ class ClassificationHistory extends Model
      */
     protected $fillable = [
         'user_id',
-        'name',
-        'type',
-        'description',
-        'food',
-        'food_shop',
+        'fish_id',
         'picture',
         'created_at',
         'updated_at',
@@ -44,6 +40,16 @@ class ClassificationHistory extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Define the relationship with the fish.
+     *
+     * @return BelongsTo
+     */
+    public function fish(): BelongsTo
+    {
+        return $this->belongsTo(Fish::class);
     }
 
     /**

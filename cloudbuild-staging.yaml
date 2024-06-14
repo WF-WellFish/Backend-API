@@ -21,6 +21,7 @@ steps:
         sed -i "s/^GOOGLE_CLOUD_STORAGE_BUCKET=.*/GOOGLE_CLOUD_STORAGE_BUCKET=wellfish-staging/" .env.testing
         sed -i "s/^GOOGLE_CLOUD_STORAGE_BUCKET_PUBLIC=.*/GOOGLE_CLOUD_STORAGE_BUCKET_PUBLIC=wellfish-staging-public/" .env.testing
         sed -i "s/^GOOGLE_CLOUD_PROJECT_ID=.*/GOOGLE_CLOUD_PROJECT_ID=wellfish/" .env.testing
+        sed -i "s/^MACHINE_LEARNING_API_URL=.*/MACHINE_LEARNING_API_URL=http://localhost:3000/" .env.testing
         # ls -la
         # cat .env.testing
     secretEnv: [

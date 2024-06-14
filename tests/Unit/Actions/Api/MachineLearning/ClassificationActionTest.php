@@ -3,12 +3,38 @@
 namespace Tests\Unit\Actions\Api\MachineLearning;
 
 use App\Actions\Api\MachineLearning\ClassificationAction;
+use Database\Seeders\FishSeeder;
+use Exception;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ClassificationActionTest extends TestCase
 {
+    /**
+     * Set up the test
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Storage::fake('gcs-public');
+        Http::fake([
+            config('machine-learning.api_url').'/classify' => Http::response([
+                'data' => [
+                    'index' => 1,
+                ],
+            ]),
+        ]);
+
+        $this->seed([
+            FishSeeder::class,
+        ]);
+    }
+
     /**
      * Test classification action class works correctly.
      *
@@ -16,10 +42,8 @@ class ClassificationActionTest extends TestCase
      */
     public function test_classification_action_class_works_correctly(): void
     {
-        $user  = $this->createUser();
+        $user = $this->createUser();
         $this->actingAs($user);
-
-        Storage::fake('gcs-public');
 
         $response = ClassificationAction::run([
             'image' => UploadedFile::fake()->image('fish.jpg'),
@@ -30,7 +54,6 @@ class ClassificationActionTest extends TestCase
         $this->assertArrayHasKey('type', $response);
         $this->assertArrayHasKey('description', $response);
         $this->assertArrayHasKey('food', $response);
-        $this->assertArrayHasKey('food_shop', $response);
         $this->assertArrayHasKey('picture', $response);
 
         $fileName = explode('classification-histories/', $response['picture'])[1];
@@ -38,11 +61,6 @@ class ClassificationActionTest extends TestCase
         $this->assertDatabaseHas('classification_histories', [
             'user_id' => $user->id,
             'picture' => $fileName,
-            'name' => $response['name'],
-            'type' => $response['type'],
-            'description' => $response['description'],
-            'food' => $response['food'],
-            'food_shop' => $response['food_shop'],
         ]);
 
         Storage::disk('gcs-public')->assertExists('classification-histories/' . $fileName);

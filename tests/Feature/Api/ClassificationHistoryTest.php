@@ -3,11 +3,28 @@
 namespace Tests\Feature\Api;
 
 use App\Models\ClassificationHistory;
+use Database\Seeders\FishSeeder;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ClassificationHistoryTest extends TestCase
 {
+    /**
+     * Set up the test
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Storage::fake('gcs-public');
+
+        $this->seed([
+            FishSeeder::class,
+        ]);
+    }
+
     /**
      * Test get user classification history.
      *
@@ -15,12 +32,11 @@ class ClassificationHistoryTest extends TestCase
      */
     public function test_get_classification_history(): void
     {
-        Storage::fake('gcs-public');
         $user = $this->createUser();
         $this->actingAs($user);
 
         ClassificationHistory::factory()->count(5)->create([
-            'user_id' => $user->id
+            'user_id' => $user->id,
         ]);
 
         $response = $this->getJson(route('classification.history'))
@@ -64,13 +80,12 @@ class ClassificationHistoryTest extends TestCase
      */
     public function test_maximum_history_classification(): void
     {
-        Storage::fake('gcs-public');
-
         $user = $this->createUser();
         $this->actingAs($user);
 
         ClassificationHistory::factory()->count(20)->create([
-            'user_id' => $user->id
+            'user_id' => $user->id,
+            'fish_id' => 1,
         ]);
 
         $response = $this->getJson(route('classification.history'));
@@ -85,14 +100,13 @@ class ClassificationHistoryTest extends TestCase
      */
     public function test_get_fish_classification_detail_by_id(): void
     {
-        Storage::fake('gcs-public');
-
         $user = $this->createUser();
         $this->actingAs($user);
 
         $classification = ClassificationHistory::factory()->create([
             'user_id' => $user->id,
-            'picture' => 'classification.jpg'
+            'picture' => 'classification.jpg',
+            'fish_id' => 1,
         ]);
 
         $response = $this->getJson(route('classification.show', $classification->id))
@@ -105,16 +119,14 @@ class ClassificationHistoryTest extends TestCase
                     'type',
                     'description',
                     'food',
-                    'food_shop',
                     'picture'
                 ]
             ]);
 
-        $this->assertEquals($classification->name, $response->json('data.name'));
-        $this->assertEquals($classification->type, $response->json('data.type'));
-        $this->assertEquals($classification->description, $response->json('data.description'));
-        $this->assertEquals($classification->food, $response->json('data.food'));
-        $this->assertEquals($classification->food_shop, $response->json('data.food_shop'));
+        $this->assertEquals($classification->fish->name, $response->json('data.name'));
+        $this->assertEquals($classification->fish->type, $response->json('data.type'));
+        $this->assertEquals($classification->fish->description, $response->json('data.description'));
+        $this->assertEquals($classification->fish->food, $response->json('data.food'));
         $this->assertEquals($classification->picture_url, $response->json('data.picture'));
     }
 

@@ -4,58 +4,119 @@ namespace App\Actions\Api\MachineLearning;
 
 use App\Actions\Action;
 use App\Models\ClassificationHistory;
+use App\Models\Fish;
 use App\Services\UploadImageService;
+use Exception;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\Response;
 
 class ClassificationAction extends Action
 {
-    // Todo: implement the actual machine learning API call
     /**
      * Classify user image and store the result in the database.
      * Call the machine learning API to classify the image.
      *
      * @param array $data
      * @return array
+     * @throws Exception
      */
     public function handle(array $data): array
     {
-        //        try {
-        //        $response = Http::post('http://localhost:5000/classification', [
-        //            'image' => $request->image
-        //        ]);
-        //        } Catch(\Exception $e) {
-        //            return $e->getMessage();
-        //        }
-        //
+        $response = $this->classifyImage($data['image']);
 
-        // temporary result only for testing, replace with the actual result from the machine learning API
-        $image = app(UploadImageService::class)->uploadImagePublic($data['image'], 'classification-histories');
+        $image = $this->uploadImage($data['image']);
 
-        $result =  array_merge([
-            'user_id' => Auth::user()->id,
-            'picture' => $image['file_name'],
-        ], $this->randomResult());
+        $fish = $this->getFish($response['data']['index']);
 
-        ClassificationHistory::query()->create($result);
+        $history = $this->createHistory($fish->id, $image['file_name']);
 
-        $result['picture'] = $image['url'];
-
-        return $result;
+        return $this->prepareResponse($history, $fish);
     }
 
-    private function randomResult(): array
+    /**
+     * Classify the image using machine learning API.
+     *
+     * @param $image
+     * @return Response
+     * @throws Exception
+     */
+    protected function classifyImage($image): Response
+    {
+        try {
+            $filename = $image->getClientOriginalName();
+            $response = Http::withHeaders([
+                'Accept' => 'application/json',
+                'WF-Auth' => config('machine-learning.api_key')
+            ])
+                ->attach('image', file_get_contents($image), $filename)
+                ->post(config('machine-learning.api_url').'/classify');
+        } catch (Exception $e) {
+            throw new ConnectionException('Failed to connect to the machine learning API.');
+        }
+
+        if ($response->failed()) {
+            throw new Exception('Failed to classify image.');
+        }
+
+        return $response;
+    }
+
+    /**
+     * Upload the image.
+     *
+     * @param $image
+     * @return array
+     */
+    protected function uploadImage($image): array
+    {
+        return app(UploadImageService::class)->uploadImagePublic($image, 'classification-histories');
+    }
+
+    /**
+     * Get the fish data.
+     *
+     * @param $id
+     * @return Fish
+     */
+    protected function getFish($id): Fish
+    {
+        return Fish::query()->where('id', $id)->first();
+    }
+
+    /**
+     * Create a new history record.
+     *
+     * @param $fishId
+     * @param $fileName
+     * @return ClassificationHistory
+     */
+    protected function createHistory($fishId, $fileName): ClassificationHistory
+    {
+        return ClassificationHistory::query()->create([
+            'user_id' => Auth::user()->id,
+            'fish_id' => $fishId,
+            'picture' => $fileName,
+        ]);
+    }
+
+    /**
+     * Prepare the response data.
+     *
+     * @param ClassificationHistory $history
+     * @param Fish $fish
+     * @return array
+     */
+    protected function prepareResponse(ClassificationHistory $history, Fish $fish): array
     {
         return [
-            'name' => 'fish name ' . $this->randomNumber(),
-            'type' => 'fish type ' . $this->randomNumber(),
-            'description' => 'fish description ' . $this->randomNumber(),
-            'food' => 'fish food ' . $this->randomNumber(),
-            'food_shop' => 'fish food shop ' . $this->randomNumber(),
+            'id' => $history->id,
+            'name' => $fish->name,
+            'type' => $fish->type,
+            'description' => $fish->description,
+            'food' => $fish->food,
+            'picture' => $history->picture_url,
         ];
-    }
-
-    private function randomNumber(): int
-    {
-        return rand(1, 100);
     }
 }

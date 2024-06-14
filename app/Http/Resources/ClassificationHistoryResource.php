@@ -15,11 +15,10 @@ class ClassificationHistoryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'name' => $this->name,
-            'type' => $this->type,
-            'description' => $this->description,
-            'food' => $this->food,
-            'food_shop' => $this->food_shop,
+            'name' => $this->fish->name,
+            'type' => $this->fish->type,
+            'description' => $this->fish->description,
+            'food' => $this->fish->food,
             'picture' => $this->picture_url
         ];
     }

@@ -29,7 +29,7 @@ class UploadImageService
             $fileName = md5($originalName . $now . Str::random(8)) . '.' . $extension;
 
             Storage::disk($disk)->putFileAs($path, $image, $fileName);
-        } catch(UnableToWriteFile|UnableToSetVisibility $e) {
+        } catch (UnableToWriteFile | UnableToSetVisibility $e) {
             throw new RuntimeException('Failed to upload image.');
         }
 

@@ -17,11 +17,8 @@ class ClassificationHistoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
-            'type' => $this->faker->name(),
-            'description' => $this->faker->sentence(),
-            'food' => $this->faker->name(),
-            'food_shop' => $this->faker->name(),
+            'user_id' => 1,
+            'fish_id' => 1,
             'picture' => $this->faker->name(),
         ];
     }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ClassificationRequest;
 use App\Http\Resources\ClassificationHistoryResource;
 use App\Models\ClassificationHistory;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -24,14 +25,7 @@ class ClassificationController extends Controller
     {
         $classified = $action->run($request->validated());
 
-        return $this->success([
-            'name' => $classified['name'],
-            'type' => $classified['type'],
-            'description' => $classified['description'],
-            'food' => $classified['food'],
-            'food_shop' => $classified['food_shop'],
-            'picture' => $classified['picture']
-        ], 'Image has been classified.', 200);
+        return $this->success($classified, 'Image has been classified.', 200);
     }
 
     /**
@@ -55,19 +49,21 @@ class ClassificationController extends Controller
      */
     public function history(): JsonResponse
     {
-        $classifications = ClassificationHistory::query()->where('user_id', Auth::id())
+        $classifications = ClassificationHistory::query()
+            ->with(['fish'])
+            ->where('user_id', Auth::id())
             ->latest()
             ->take(15)
             ->get([
                 'id',
-                'name',
+                'fish_id',
                 'picture',
                 'created_at'
             ])
             ->map(function (ClassificationHistory $classification) {
                 return [
                     'id' => $classification->id,
-                    'name' => $classification->name,
+                    'name' => $classification->fish->name,
                     'picture' => $classification->picture_url,
                     'created_at' => $classification->created_at->diffForHumans()
                 ];
