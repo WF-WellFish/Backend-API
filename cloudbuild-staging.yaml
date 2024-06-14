@@ -23,7 +23,7 @@ steps:
         sed -i "s/^GOOGLE_CLOUD_PROJECT_ID=.*/GOOGLE_CLOUD_PROJECT_ID=wellfish/" .env.testing
         sed -i "s/^MACHINE_LEARNING_API_URL=.*/MACHINE_LEARNING_API_URL=localhost:3000/" .env.testing
         # ls -la
-        cat .env.testing
+        # cat .env.testing
     secretEnv: [
         'DB_HOST_ST',
         'DB_PASSWORD_ST'
