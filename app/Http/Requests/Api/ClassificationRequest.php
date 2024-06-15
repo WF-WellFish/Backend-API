@@ -6,7 +6,6 @@ use App\Traits\ApiTrait;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Auth;
 
 class ClassificationRequest extends FormRequest
 {
@@ -16,7 +15,7 @@ class ClassificationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return true;
     }
 
     /**

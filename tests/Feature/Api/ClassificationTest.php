@@ -57,11 +57,11 @@ class ClassificationTest extends TestCase
     }
 
     /**
-     * Test user can classify image.
+     * Test auth user can classify image and save to database and upload file to bucket
      *
      * @return void
      */
-    public function test_user_can_classify_image(): void
+    public function test_auth_user_can_classify_image_and_save_to_database(): void
     {
         $this->successHttpFake();
         $user = $this->createUser();
@@ -97,6 +97,35 @@ class ClassificationTest extends TestCase
     }
 
     /**
+     * Test guest user can classify image and not save to database and not upload file to bucket
+     *
+     * @return void
+     */
+    public function test_guest_user_can_classify_image_and_not_save_to_database(): void
+    {
+        $this->successHttpFake();
+
+        $response = $this->postJson(route('classification'), [
+            'image' => UploadedFile::fake()->image('fish.jpg')
+        ])
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'status',
+                'message',
+                'data' => [
+                    'name',
+                    'type',
+                    'description',
+                    'food',
+                    'picture'
+                ],
+            ]);
+
+        $this->assertDatabaseCount('classification_histories', 0);
+        $this->assertEquals(null, $response['data']['picture']);
+    }
+
+    /**
      * Test validation request
      *
      * @return void
@@ -117,26 +146,6 @@ class ClassificationTest extends TestCase
                         'image',
                     ],
                 ],
-            ]);
-
-        $this->assertDatabaseCount('classification_histories', 0);
-    }
-
-    /**
-     * Test user can't classify image if not authenticated.
-     *
-     * @return void
-     */
-    public function test_user_cant_classify_image_if_not_authenticated(): void
-    {
-        $this->postJson(route('classification'), [
-            'image' => UploadedFile::fake()->image('fish.jpg')
-        ])
-            ->assertStatus(401)
-            ->assertJson([
-                'status' => 'error',
-                'message' => 'Unauthenticated.',
-                'data' => []
             ]);
 
         $this->assertDatabaseCount('classification_histories', 0);

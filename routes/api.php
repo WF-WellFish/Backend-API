@@ -17,11 +17,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('change-password', [ChangePasswordController::class, 'index'])->name('change-password');
 
     Route::controller(ClassificationController::class)->group(function () {
-        Route::post('classification', 'index')->name('classification');
         Route::get('classification-history/{history}', 'show')->name('classification.show');
         Route::get('classification-history', 'history')->name('classification.history');
     });
 });
+
+Route::post('classification', [ClassificationController::class, 'index'])->name('classification');
+
 
 // TODO : bikin user yang sudah login tidak bisa access register dan login
 Route::post('login', [LoginController::class, 'index'])->name('login');

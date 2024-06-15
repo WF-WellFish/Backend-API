@@ -8,6 +8,7 @@ use App\Models\Fish;
 use App\Services\UploadImageService;
 use Exception;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\Response;
@@ -26,11 +27,14 @@ class ClassificationAction extends Action
     {
         $response = $this->classifyImage($data['image']);
 
-        $image = $this->uploadImage($data['image']);
-
         $fish = $this->getFish($response['data']['index']);
 
-        $history = $this->createHistory($fish->id, $image['file_name']);
+        $history = new ClassificationHistory();
+
+        if(Auth::guard('sanctum')->check()) {
+            $image = $this->uploadImage($data['image']);
+            $history = $this->createHistory($fish->id, $image['file_name']);
+        }
 
         return $this->prepareResponse($history, $fish);
     }
@@ -38,11 +42,11 @@ class ClassificationAction extends Action
     /**
      * Classify the image using machine learning API.
      *
-     * @param $image
+     * @param UploadedFile $image
      * @return Response
      * @throws Exception
      */
-    protected function classifyImage($image): Response
+    protected function classifyImage(UploadedFile $image): Response
     {
         try {
             $filename = $image->getClientOriginalName();
@@ -66,10 +70,10 @@ class ClassificationAction extends Action
     /**
      * Upload the image.
      *
-     * @param $image
+     * @param UploadedFile $image
      * @return array
      */
-    protected function uploadImage($image): array
+    protected function uploadImage(UploadedFile $image): array
     {
         return app(UploadImageService::class)->uploadImagePublic($image, 'classification-histories');
     }
@@ -77,10 +81,10 @@ class ClassificationAction extends Action
     /**
      * Get the fish data.
      *
-     * @param $id
+     * @param int $id
      * @return Fish
      */
-    protected function getFish($id): Fish
+    protected function getFish(int $id): Fish
     {
         return Fish::query()->where('id', $id)->first();
     }
@@ -88,14 +92,14 @@ class ClassificationAction extends Action
     /**
      * Create a new history record.
      *
-     * @param $fishId
-     * @param $fileName
+     * @param int $fishId
+     * @param string $fileName
      * @return ClassificationHistory
      */
-    protected function createHistory($fishId, $fileName): ClassificationHistory
+    protected function createHistory(int $fishId, string $fileName): ClassificationHistory
     {
         return ClassificationHistory::query()->create([
-            'user_id' => Auth::user()->id,
+            'user_id' => Auth::guard('sanctum')->user()->id,
             'fish_id' => $fishId,
             'picture' => $fileName,
         ]);
@@ -111,12 +115,12 @@ class ClassificationAction extends Action
     protected function prepareResponse(ClassificationHistory $history, Fish $fish): array
     {
         return [
-            'id' => $history->id,
+            'id' => $history->id ?? null,
             'name' => $fish->name,
             'type' => $fish->type,
             'description' => $fish->description,
             'food' => $fish->food,
-            'picture' => $history->picture_url,
+            'picture' => $history->picture_url ?? null,
         ];
     }
 }
