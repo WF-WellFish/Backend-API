@@ -115,7 +115,6 @@ class ClassificationAction extends Action
     protected function prepareResponse(ClassificationHistory $history, Fish $fish): array
     {
         return [
-            'id' => $history->id ?? null,
             'name' => $fish->name,
             'type' => $fish->type,
             'description' => $fish->description,
