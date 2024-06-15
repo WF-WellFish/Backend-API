@@ -55,18 +55,17 @@ steps:
     args:
       - '-c'
       - |
-        #        mkdir -p ~/root/.ssh
-        #        gcloud secrets versions access latest --secret=cloud-build-ssh-key > ~/root/.ssh/id_rsa
-        #        chmod 600 ~/root/.ssh/id_rsa
-        #        gcloud secrets versions access latest --secret=cloud-build-ssh-key-pub > ~/root/.ssh/id_rsa.pub
-        #        chmod 600 ~/root/.ssh/id_rsa.pub
-        #        gcloud secrets versions access latest --secret=cloud-build-ssh-key-ppk > ~/root/.ssh/id_rsa.ppk
-        #        chmod 600 ~/root/.ssh/id_rsa.ppk
-        #        mkdir -p /builder/home/.ssh/
-        #        touch /builder/home/.ssh/google_compute_known_hosts
-        #        set -x
-        gcloud compute ssh backend-api-staging --zone=asia-southeast2-b --command="cd /var/www/backend && ls -a"
-        # gcloud compute ssh backend-api-staging --ssh-key-file=~/root/.ssh/id_rsa --zone=asia-southeast2-b --command="cd /var/www/backend && ls -a"
+        mkdir -p ~/root/.ssh
+        gcloud secrets versions access latest --secret=cloud-build-ssh-key > ~/root/.ssh/id_rsa
+        chmod 600 ~/root/.ssh/id_rsa
+        gcloud secrets versions access latest --secret=cloud-build-ssh-key-pub > ~/root/.ssh/id_rsa.pub
+        chmod 600 ~/root/.ssh/id_rsa.pub
+        gcloud secrets versions access latest --secret=cloud-build-ssh-key-ppk > ~/root/.ssh/id_rsa.ppk
+        chmod 600 ~/root/.ssh/id_rsa.ppk
+        mkdir -p /builder/home/.ssh/
+        touch /builder/home/.ssh/google_compute_known_hosts
+        set -x
+        gcloud compute ssh backend-api-staging --ssh-key-file=~/root/.ssh/id_rsa --zone=asia-southeast2-b --command="cd /var/www/backend && ls -a"
 
 # Specify the timeout
 timeout: '1200s'
