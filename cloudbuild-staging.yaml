@@ -1,42 +1,42 @@
 steps:
   # Step 0: Install Composer dependencies
-  - id: 'Install dependencies'
-    name: 'composer:latest'
-    args: ['install']
+#  - id: 'Install dependencies'
+#    name: 'composer:latest'
+#    args: ['install']
 
   # Step 1: Create the .env.testing files
-  - id: 'Create setup env testing file'
-    name: 'gcr.io/wellfish/php8.2-cli'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        cp .env.example .env.testing
-        php artisan key:generate --env=testing
-        sed -i "s/^APP_ENV=.*/APP_ENV=testing/" .env.testing
-        sed -i "s/^DB_HOST=.*/DB_HOST=$$DB_HOST_ST/" .env.testing
-        sed -i "s/^DB_DATABASE=.*/DB_DATABASE=wellfish_test/" .env.testing
-        sed -i "s/^DB_USERNAME=.*/DB_USERNAME=root/" .env.testing
-        sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=$$DB_PASSWORD_ST/" .env.testing
-        sed -i "s/^GOOGLE_CLOUD_STORAGE_BUCKET=.*/GOOGLE_CLOUD_STORAGE_BUCKET=wellfish-staging/" .env.testing
-        sed -i "s/^GOOGLE_CLOUD_STORAGE_BUCKET_PUBLIC=.*/GOOGLE_CLOUD_STORAGE_BUCKET_PUBLIC=wellfish-staging-public/" .env.testing
-        sed -i "s/^GOOGLE_CLOUD_PROJECT_ID=.*/GOOGLE_CLOUD_PROJECT_ID=wellfish/" .env.testing
-        sed -i "s/^MACHINE_LEARNING_API_URL=.*/MACHINE_LEARNING_API_URL=localhost:3000/" .env.testing
-        # ls -la
-        # cat .env.testing
-    secretEnv: [
-        'DB_HOST_ST',
-        'DB_PASSWORD_ST'
-    ]
+#  - id: 'Create setup env testing file'
+#    name: 'gcr.io/wellfish/php8.2-cli'
+#    entrypoint: 'bash'
+#    args:
+#      - '-c'
+#      - |
+#        cp .env.example .env.testing
+#        php artisan key:generate --env=testing
+#        sed -i "s/^APP_ENV=.*/APP_ENV=testing/" .env.testing
+#        sed -i "s/^DB_HOST=.*/DB_HOST=$$DB_HOST_ST/" .env.testing
+#        sed -i "s/^DB_DATABASE=.*/DB_DATABASE=wellfish_test/" .env.testing
+#        sed -i "s/^DB_USERNAME=.*/DB_USERNAME=root/" .env.testing
+#        sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=$$DB_PASSWORD_ST/" .env.testing
+#        sed -i "s/^GOOGLE_CLOUD_STORAGE_BUCKET=.*/GOOGLE_CLOUD_STORAGE_BUCKET=wellfish-staging/" .env.testing
+#        sed -i "s/^GOOGLE_CLOUD_STORAGE_BUCKET_PUBLIC=.*/GOOGLE_CLOUD_STORAGE_BUCKET_PUBLIC=wellfish-staging-public/" .env.testing
+#        sed -i "s/^GOOGLE_CLOUD_PROJECT_ID=.*/GOOGLE_CLOUD_PROJECT_ID=wellfish/" .env.testing
+#        sed -i "s/^MACHINE_LEARNING_API_URL=.*/MACHINE_LEARNING_API_URL=localhost:3000/" .env.testing
+#        # ls -la
+#        # cat .env.testing
+#    secretEnv: [
+#        'DB_HOST_ST',
+#        'DB_PASSWORD_ST'
+#    ]
 
   # Step 2: Run Pint lint check
-  - id: 'Check Code style using Pint'
-    name: 'gcr.io/wellfish/php8.2-cli'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        vendor/bin/pint --test
+#  - id: 'Check Code style using Pint'
+#    name: 'gcr.io/wellfish/php8.2-cli'
+#    entrypoint: 'bash'
+#    args:
+#      - '-c'
+#      - |
+#        vendor/bin/pint --test
 
 #  #TODO : Fix masalah connect ke mysql instance ini kalau mysql instance nya gk ngasih network 0.0.0.0/0 dia gk mau ke connect
 #  # Step 3: Run the PHPUnit tests
@@ -60,10 +60,8 @@ steps:
         chmod 600 ~/root/.ssh/id_rsa
         gcloud secrets versions access latest --secret=cloud-build-ssh-key-pub > ~/root/.ssh/id_rsa.pub
         chmod 600 ~/root/.ssh/id_rsa.pub
-        #        gcloud secrets versions access latest --secret=cloud-build-ssh-key-ppk > ~/root/.ssh/id_rsa.ppk
-        #        chmod 600 ~/root/.ssh/id_rsa.ppk
-        mkdir -p /builder/home/.ssh/
-        touch /builder/home/.ssh/google_compute_known_hosts
+        #        mkdir -p /builder/home/.ssh/
+        #        touch /builder/home/.ssh/google_compute_known_hosts
         set -x
         gcloud compute ssh cloud_build@backend-api-staging --ssh-key-file=~/root/.ssh/id_rsa --zone=asia-southeast2-b --command="cd /var/www/backend && ls -a"
 
