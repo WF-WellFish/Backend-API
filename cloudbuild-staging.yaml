@@ -65,7 +65,7 @@ steps:
         mkdir -p /builder/home/.ssh/
         touch /builder/home/.ssh/google_compute_known_hosts
         set -x
-        gcloud compute ssh backend-api-staging --ssh-key-file=~/root/.ssh/id_rsa --zone=asia-southeast2-b --command="cd /var/www/backend && ls -a"
+        gcloud compute ssh backend-api-staging --ssh-key-file=~/root/.ssh/id_rsa --zone=asia-southeast2-b --command="cd /var/www/backend && ls -a" --troubleshoot
 
 # Specify the timeout
 timeout: '1200s'
