@@ -33,10 +33,10 @@ class ClassificationAction extends Action
 
         if(Auth::guard('sanctum')->check()) {
             $image = $this->uploadImage($data['image']);
-            $history = $this->createHistory($fish->id, $image['file_name']);
+            $this->createHistory($fish->id, $image['file_name']);
         }
 
-        return $this->prepareResponse($history, $fish);
+        return $this->prepareResponse($fish);
     }
 
     /**
@@ -108,18 +108,16 @@ class ClassificationAction extends Action
     /**
      * Prepare the response data.
      *
-     * @param ClassificationHistory $history
      * @param Fish $fish
      * @return array
      */
-    protected function prepareResponse(ClassificationHistory $history, Fish $fish): array
+    protected function prepareResponse(Fish $fish): array
     {
         return [
             'name' => $fish->name,
             'type' => $fish->type,
             'description' => $fish->description,
             'food' => $fish->food,
-            'picture' => $history->picture_url ?? null,
         ];
     }
 }

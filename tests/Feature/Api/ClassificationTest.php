@@ -80,20 +80,14 @@ class ClassificationTest extends TestCase
                     'type',
                     'description',
                     'food',
-                    'picture'
                 ],
             ]);
 
         $this->assertDatabaseCount('classification_histories', 1);
 
-        $fileName = explode('classification-histories/', $response['data']['picture'])[1];
-
         $this->assertDatabaseHas('classification_histories', [
             'user_id' => $user->id,
-            'picture' => $fileName,
         ]);
-
-        Storage::disk('gcs-public')->assertExists('classification-histories/' . $fileName);
     }
 
     /**
@@ -117,12 +111,10 @@ class ClassificationTest extends TestCase
                     'type',
                     'description',
                     'food',
-                    'picture'
                 ],
             ]);
 
         $this->assertDatabaseCount('classification_histories', 0);
-        $this->assertEquals(null, $response['data']['picture']);
     }
 
     /**

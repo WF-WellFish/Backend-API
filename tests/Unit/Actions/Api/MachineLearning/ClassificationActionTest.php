@@ -53,15 +53,9 @@ class ClassificationActionTest extends TestCase
         $this->assertArrayHasKey('type', $response);
         $this->assertArrayHasKey('description', $response);
         $this->assertArrayHasKey('food', $response);
-        $this->assertArrayHasKey('picture', $response);
-
-        $fileName = explode('classification-histories/', $response['picture'])[1];
 
         $this->assertDatabaseHas('classification_histories', [
             'user_id' => $user->id,
-            'picture' => $fileName,
         ]);
-
-        Storage::disk('gcs-public')->assertExists('classification-histories/' . $fileName);
     }
 }
