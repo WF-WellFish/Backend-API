@@ -17,13 +17,12 @@ class UpdateProfileAction extends Action
      */
     public function handle(array $data): User
     {
+        $user = Auth::user();
         if($data['profile_picture'] ?? false) {
             $profilePicture = app(UploadImageService::class)->uploadImagePublic($data['profile_picture'], 'profile-pictures');
         }
 
-        $data['profile_picture'] = $profilePicture['file_name'] ?? null;
-
-        $user = Auth::user();
+        $data['profile_picture'] = $profilePicture['file_name'] ?? $user->profile_picture;
         return tap($user)->update($data);
     }
 }
